@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.flow.dao.PersonFlowMapper">
+    <resultMap id="BaseResultMap" type="com.ehootu.flow.model.PersonFlow">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="police_id" jdbcType="VARCHAR" property="policeId"/>
+        <result column="floating_name" jdbcType="VARCHAR" property="floatingName"/>
+        <result column="gender" jdbcType="VARCHAR" property="gender"/>
+        <result column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber"/>
+        <result column="qq" jdbcType="VARCHAR" property="qq"/>
+        <result column="weixin" jdbcType="VARCHAR" property="weixin"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="police_station" jdbcType="VARCHAR" property="policeStation"/>
+        <result column="police_office" jdbcType="VARCHAR" property="policeOffice"/>
+        <result column="work_station" jdbcType="VARCHAR" property="workStation"/>
+        <result column="personal_effects" jdbcType="VARCHAR" property="personalEffects"/>
+        <result column="personal_feature" jdbcType="VARCHAR" property="personalFeature"/>
+        <result column="inflow_time" jdbcType="TIMESTAMP" property="inflowTime"/>
+        <result column="outflow_time" jdbcType="TIMESTAMP" property="outflowTime"/>
+        <result column="flow_reason" jdbcType="VARCHAR" property="flowReason"/>
+        <result column="outflow_to" jdbcType="VARCHAR" property="outflowTo"/>
+        <result column="photographs" jdbcType="VARCHAR" property="photographs"/>
+        <result column="register_address" jdbcType="VARCHAR" property="registerAddress"/>
+        <result column="criminal_record" jdbcType="VARCHAR" property="criminalRecord"/>
+        <result column="action_track" jdbcType="VARCHAR" property="actionTrack"/>
+        <result column="work_company" jdbcType="VARCHAR" property="workCompany"/>
+        <result column="if_input" jdbcType="INTEGER" property="ifInput"/>
+        <result column="floating_population_type" jdbcType="INTEGER" property="floatingPopulationType"/>
+        <result column="flow_way" jdbcType="INTEGER" property="flowWay"/>
+        <result column="input_time" jdbcType="TIMESTAMP" property="inputTime"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="number" jdbcType="VARCHAR" property="number"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, user_id, police_id, floating_name, gender, id_number, phone_number, qq, weixin,
+    email, police_station, police_office, work_station, personal_effects, personal_feature,
+    inflow_time, outflow_time, flow_reason, outflow_to, photographs, register_address,
+    criminal_record, action_track, work_company, if_input, floating_population_type,
+    flow_way, input_time, operator, create_time, update_time, delete_flag, number
+  </sql>
+    <select id="selectByExample" parameterType="com.ehootu.flow.model.PersonFlowExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from person_flow
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from person_flow
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from person_flow
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ehootu.flow.model.PersonFlowExample">
+        delete from person_flow
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ehootu.flow.model.PersonFlow">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into person_flow (id, user_id, police_id,
+        floating_name, gender, id_number,
+        phone_number, qq, weixin,
+        email, police_station, police_office,
+        work_station, personal_effects, personal_feature,
+        inflow_time, outflow_time, flow_reason,
+        outflow_to, photographs, register_address,
+        criminal_record, action_track, work_company,
+        if_input, floating_population_type, flow_way,
+        input_time, operator, create_time,
+        update_time, delete_flag, number
+        )
+        values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{policeId,jdbcType=INTEGER},
+        #{floatingName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{idNumber,jdbcType=VARCHAR},
+        #{phoneNumber,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{weixin,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR}, #{policeStation,jdbcType=VARCHAR}, #{policeOffice,jdbcType=VARCHAR},
+        #{workStation,jdbcType=VARCHAR}, #{personalEffects,jdbcType=VARCHAR}, #{personalFeature,jdbcType=VARCHAR},
+        #{inflowTime,jdbcType=TIMESTAMP}, #{outflowTime,jdbcType=TIMESTAMP}, #{flowReason,jdbcType=VARCHAR},
+        #{outflowTo,jdbcType=VARCHAR}, #{photographs,jdbcType=VARCHAR}, #{registerAddress,jdbcType=VARCHAR},
+        #{criminalRecord,jdbcType=VARCHAR}, #{actionTrack,jdbcType=VARCHAR}, #{workCompany,jdbcType=VARCHAR},
+        #{ifInput,jdbcType=INTEGER}, #{floatingPopulationType,jdbcType=INTEGER}, #{flowWay,jdbcType=INTEGER},
+        #{inputTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}, #{deleteFlag,jdbcType=INTEGER}, #{number,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.ehootu.flow.model.PersonFlow" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into person_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="policeId != null">
+                police_id,
+            </if>
+            <if test="floatingName != null">
+                floating_name,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="idNumber != null">
+                id_number,
+            </if>
+            <if test="phoneNumber != null">
+                phone_number,
+            </if>
+            <if test="qq != null">
+                qq,
+            </if>
+            <if test="weixin != null">
+                weixin,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="policeStation != null">
+                police_station,
+            </if>
+            <if test="policeOffice != null">
+                police_office,
+            </if>
+            <if test="workStation != null">
+                work_station,
+            </if>
+            <if test="personalEffects != null">
+                personal_effects,
+            </if>
+            <if test="personalFeature != null">
+                personal_feature,
+            </if>
+            <if test="inflowTime != null">
+                inflow_time,
+            </if>
+            <if test="outflowTime != null">
+                outflow_time,
+            </if>
+            <if test="flowReason != null">
+                flow_reason,
+            </if>
+            <if test="outflowTo != null">
+                outflow_to,
+            </if>
+            <if test="photographs != null">
+                photographs,
+            </if>
+            <if test="registerAddress != null">
+                register_address,
+            </if>
+            <if test="criminalRecord != null">
+                criminal_record,
+            </if>
+            <if test="actionTrack != null">
+                action_track,
+            </if>
+            <if test="workCompany != null">
+                work_company,
+            </if>
+            <if test="ifInput != null">
+                if_input,
+            </if>
+            <if test="floatingPopulationType != null">
+                floating_population_type,
+            </if>
+            <if test="flowWay != null">
+                flow_way,
+            </if>
+            <if test="inputTime != null">
+                input_time,
+            </if>
+            <if test="operator != null">
+                operator,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="policeId != null">
+                #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="floatingName != null">
+                #{floatingName,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                #{gender,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qq != null">
+                #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="weixin != null">
+                #{weixin,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="policeStation != null">
+                #{policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="policeOffice != null">
+                #{policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="workStation != null">
+                #{workStation,jdbcType=VARCHAR},
+            </if>
+            <if test="personalEffects != null">
+                #{personalEffects,jdbcType=VARCHAR},
+            </if>
+            <if test="personalFeature != null">
+                #{personalFeature,jdbcType=VARCHAR},
+            </if>
+            <if test="inflowTime != null">
+                #{inflowTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="outflowTime != null">
+                #{outflowTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="flowReason != null">
+                #{flowReason,jdbcType=VARCHAR},
+            </if>
+            <if test="outflowTo != null">
+                #{outflowTo,jdbcType=VARCHAR},
+            </if>
+            <if test="photographs != null">
+                #{photographs,jdbcType=VARCHAR},
+            </if>
+            <if test="registerAddress != null">
+                #{registerAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="criminalRecord != null">
+                #{criminalRecord,jdbcType=VARCHAR},
+            </if>
+            <if test="actionTrack != null">
+                #{actionTrack,jdbcType=VARCHAR},
+            </if>
+            <if test="workCompany != null">
+                #{workCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="ifInput != null">
+                #{ifInput,jdbcType=INTEGER},
+            </if>
+            <if test="floatingPopulationType != null">
+                #{floatingPopulationType,jdbcType=INTEGER},
+            </if>
+            <if test="flowWay != null">
+                #{flowWay,jdbcType=INTEGER},
+            </if>
+            <if test="inputTime != null">
+                #{inputTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operator != null">
+                #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ehootu.flow.model.PersonFlowExample" resultType="java.lang.Long">
+        select count(*) from person_flow
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update person_flow
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.userId != null">
+                user_id = #{record.userId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeId != null">
+                police_id = #{record.policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.floatingName != null">
+                floating_name = #{record.floatingName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.gender != null">
+                gender = #{record.gender,jdbcType=VARCHAR},
+            </if>
+            <if test="record.idNumber != null">
+                id_number = #{record.idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.phoneNumber != null">
+                phone_number = #{record.phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.qq != null">
+                qq = #{record.qq,jdbcType=VARCHAR},
+            </if>
+            <if test="record.weixin != null">
+                weixin = #{record.weixin,jdbcType=VARCHAR},
+            </if>
+            <if test="record.email != null">
+                email = #{record.email,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeStation != null">
+                police_station = #{record.policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeOffice != null">
+                police_office = #{record.policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="record.workStation != null">
+                work_station = #{record.workStation,jdbcType=VARCHAR},
+            </if>
+            <if test="record.personalEffects != null">
+                personal_effects = #{record.personalEffects,jdbcType=VARCHAR},
+            </if>
+            <if test="record.personalFeature != null">
+                personal_feature = #{record.personalFeature,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inflowTime != null">
+                inflow_time = #{record.inflowTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.outflowTime != null">
+                outflow_time = #{record.outflowTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.flowReason != null">
+                flow_reason = #{record.flowReason,jdbcType=VARCHAR},
+            </if>
+            <if test="record.outflowTo != null">
+                outflow_to = #{record.outflowTo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.photographs != null">
+                photographs = #{record.photographs,jdbcType=VARCHAR},
+            </if>
+            <if test="record.registerAddress != null">
+                register_address = #{record.registerAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="record.criminalRecord != null">
+                criminal_record = #{record.criminalRecord,jdbcType=VARCHAR},
+            </if>
+            <if test="record.actionTrack != null">
+                action_track = #{record.actionTrack,jdbcType=VARCHAR},
+            </if>
+            <if test="record.workCompany != null">
+                work_company = #{record.workCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="record.ifInput != null">
+                if_input = #{record.ifInput,jdbcType=INTEGER},
+            </if>
+            <if test="record.floatingPopulationType != null">
+                floating_population_type = #{record.floatingPopulationType,jdbcType=INTEGER},
+            </if>
+            <if test="record.flowWay != null">
+                flow_way = #{record.flowWay,jdbcType=INTEGER},
+            </if>
+            <if test="record.inputTime != null">
+                input_time = #{record.inputTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.operator != null">
+                operator = #{record.operator,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.deleteFlag != null">
+                delete_flag = #{record.deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="record.number != null">
+                number = #{record.number,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update person_flow
+        set id = #{record.id,jdbcType=VARCHAR},
+        user_id = #{record.userId,jdbcType=VARCHAR},
+        police_id = #{record.policeId,jdbcType=VARCHAR},
+        floating_name = #{record.floatingName,jdbcType=VARCHAR},
+        gender = #{record.gender,jdbcType=VARCHAR},
+        id_number = #{record.idNumber,jdbcType=VARCHAR},
+        phone_number = #{record.phoneNumber,jdbcType=VARCHAR},
+        qq = #{record.qq,jdbcType=VARCHAR},
+        weixin = #{record.weixin,jdbcType=VARCHAR},
+        email = #{record.email,jdbcType=VARCHAR},
+        police_station = #{record.policeStation,jdbcType=VARCHAR},
+        police_office = #{record.policeOffice,jdbcType=VARCHAR},
+        work_station = #{record.workStation,jdbcType=VARCHAR},
+        personal_effects = #{record.personalEffects,jdbcType=VARCHAR},
+        personal_feature = #{record.personalFeature,jdbcType=VARCHAR},
+        inflow_time = #{record.inflowTime,jdbcType=TIMESTAMP},
+        outflow_time = #{record.outflowTime,jdbcType=TIMESTAMP},
+        flow_reason = #{record.flowReason,jdbcType=VARCHAR},
+        outflow_to = #{record.outflowTo,jdbcType=VARCHAR},
+        photographs = #{record.photographs,jdbcType=VARCHAR},
+        register_address = #{record.registerAddress,jdbcType=VARCHAR},
+        criminal_record = #{record.criminalRecord,jdbcType=VARCHAR},
+        action_track = #{record.actionTrack,jdbcType=VARCHAR},
+        work_company = #{record.workCompany,jdbcType=VARCHAR},
+        if_input = #{record.ifInput,jdbcType=INTEGER},
+        floating_population_type = #{record.floatingPopulationType,jdbcType=INTEGER},
+        flow_way = #{record.flowWay,jdbcType=INTEGER},
+        input_time = #{record.inputTime,jdbcType=TIMESTAMP},
+        operator = #{record.operator,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        delete_flag = #{record.deleteFlag,jdbcType=INTEGER},
+        number = #{record.number,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.flow.model.PersonFlow">
+        update person_flow
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="policeId != null">
+                police_id = #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="floatingName != null">
+                floating_name = #{floatingName,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                id_number = #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                phone_number = #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qq != null">
+                qq = #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="weixin != null">
+                weixin = #{weixin,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="policeStation != null">
+                police_station = #{policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="policeOffice != null">
+                police_office = #{policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="workStation != null">
+                work_station = #{workStation,jdbcType=VARCHAR},
+            </if>
+            <if test="personalEffects != null">
+                personal_effects = #{personalEffects,jdbcType=VARCHAR},
+            </if>
+            <if test="personalFeature != null">
+                personal_feature = #{personalFeature,jdbcType=VARCHAR},
+            </if>
+            <if test="inflowTime != null">
+                inflow_time = #{inflowTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="outflowTime != null">
+                outflow_time = #{outflowTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="flowReason != null">
+                flow_reason = #{flowReason,jdbcType=VARCHAR},
+            </if>
+            <if test="outflowTo != null">
+                outflow_to = #{outflowTo,jdbcType=VARCHAR},
+            </if>
+            <if test="photographs != null">
+                photographs = #{photographs,jdbcType=VARCHAR},
+            </if>
+            <if test="registerAddress != null">
+                register_address = #{registerAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="criminalRecord != null">
+                criminal_record = #{criminalRecord,jdbcType=VARCHAR},
+            </if>
+            <if test="actionTrack != null">
+                action_track = #{actionTrack,jdbcType=VARCHAR},
+            </if>
+            <if test="workCompany != null">
+                work_company = #{workCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="ifInput != null">
+                if_input = #{ifInput,jdbcType=INTEGER},
+            </if>
+            <if test="floatingPopulationType != null">
+                floating_population_type = #{floatingPopulationType,jdbcType=INTEGER},
+            </if>
+            <if test="flowWay != null">
+                flow_way = #{flowWay,jdbcType=INTEGER},
+            </if>
+            <if test="inputTime != null">
+                input_time = #{inputTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operator != null">
+                operator = #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="number != null">
+                number = #{number,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ehootu.flow.model.PersonFlow">
+    update person_flow
+    set user_id = #{userId,jdbcType=INTEGER},
+    police_id = #{policeId,jdbcType=INTEGER},
+    floating_name = #{floatingName,jdbcType=VARCHAR},
+    gender = #{gender,jdbcType=VARCHAR},
+    id_number = #{idNumber,jdbcType=VARCHAR},
+    phone_number = #{phoneNumber,jdbcType=VARCHAR},
+    qq = #{qq,jdbcType=VARCHAR},
+    weixin = #{weixin,jdbcType=VARCHAR},
+    email = #{email,jdbcType=VARCHAR},
+    police_station = #{policeStation,jdbcType=VARCHAR},
+    police_office = #{policeOffice,jdbcType=VARCHAR},
+    work_station = #{workStation,jdbcType=VARCHAR},
+    personal_effects = #{personalEffects,jdbcType=VARCHAR},
+    personal_feature = #{personalFeature,jdbcType=VARCHAR},
+    inflow_time = #{inflowTime,jdbcType=TIMESTAMP},
+    outflow_time = #{outflowTime,jdbcType=TIMESTAMP},
+    flow_reason = #{flowReason,jdbcType=VARCHAR},
+    outflow_to = #{outflowTo,jdbcType=VARCHAR},
+    photographs = #{photographs,jdbcType=VARCHAR},
+    register_address = #{registerAddress,jdbcType=VARCHAR},
+    criminal_record = #{criminalRecord,jdbcType=VARCHAR},
+    action_track = #{actionTrack,jdbcType=VARCHAR},
+    work_company = #{workCompany,jdbcType=VARCHAR},
+    if_input = #{ifInput,jdbcType=INTEGER},
+    floating_population_type = #{floatingPopulationType,jdbcType=INTEGER},
+    flow_way = #{flowWay,jdbcType=INTEGER},
+    input_time = #{inputTime,jdbcType=TIMESTAMP},
+    operator = #{operator,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    delete_flag = #{deleteFlag,jdbcType=INTEGER},
+    number = #{number,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <!-- 根据所属派出所查询 待审批动人口列表 approval_status=0 -->
+    <select id="queryPersonFlowPendingApproval" resultMap="outPersonFlowApproval"
+            parameterType="com.ehootu.core.util.Query">
+        SELECT * from person_flow pf LEFT JOIN approval a on pf.id=a.person_flow_id
+
+        where operator='1' and a.approval_status=0
+
+        <!-- 所属派出所 -->
+        <if test="policeStation!=null and policeStation!=''">
+            and pf.police_station = #{policeStation}
+        </if>
+        <!-- 所属警务室 -->
+        <if test="policeOffice!=null and policeOffice!=''">
+            and pf.police_office = #{policeOffice}
+        </if>
+        <!-- 登记开始时间条件 小于等于-->
+        <if test="startTime!=null and startTime !=''">
+            and pf.input_time &lt;=#{startTime}
+        </if>
+        <!--  登记结束时间条件 大于等于-->
+        <if test="endTime!=null and endTime !=''">
+            and pf.input_time &gt;=#{endTime}
+        </if>
+
+        <!-- 流动人口类型流动人口类型（1-出租、2-建筑工地人员，3-企业单位） -->
+        <if test="floatingPopulationType!=null and floatingPopulationType!=''">
+            and pf.floating_population_type = #{floatingPopulationType}
+        </if>
+        <!-- 流出或者流入类型（1-流入；2-流出） -->
+        <if test="flowWay !=null and flowWay !=''">
+            and pf.flow_way = #{flowWay }
+        </if>
+        <!-- 流动人口姓名 -->
+        <if test="floatingName !=null and floatingName !=''">
+            and pf.floating_name like concat('%',#{floatingName},'%')
+        </if>
+
+        ORDER BY a.approval_status ASC,pf.input_time DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <!-- 根据所属派出所查询 已审批动人口列表 -->
+    <select id="queryPersonFlowApprovaled" resultMap="outPersonFlowApproval"
+            parameterType="com.ehootu.core.util.Query">
+        SELECT * from person_flow pf LEFT JOIN approval a on pf.id=a.person_flow_id
+
+        where operator='1' and a.approval_status!=0
+
+        <!-- 所属派出所 -->
+        <if test="policeStation!=null and policeStation!=''">
+            and pf.police_station = #{policeStation}
+        </if>
+        <!-- 所属警务室 -->
+        <if test="policeOffice!=null and policeOffice!=''">
+            and pf.police_office = #{policeOffice}
+        </if>
+
+        <!-- 审核开始时间条件 小于等于-->
+        <if test="startTime!=null and startTime !=''">
+            and a.approval_time &lt;=#{startTime}
+        </if>
+        <!--  审核结束时间条件 大于等于-->
+        <if test="endTime!=null and endTime !=''">
+            and a.approval_time &gt;=#{endTime}
+        </if>
+        <!-- 流动人口类型流动人口类型（1-出租、2-建筑工地人员，3-企业单位） -->
+        <if test="floatingPopulationType!=null and floatingPopulationType!=''">
+            and pf.floating_population_type = #{floatingPopulationType}
+        </if>
+        <!-- 流出或者流入类型（1-流入；2-流出） -->
+        <if test="flowWay !=null and flowWay !=''">
+            and pf.flow_way = #{flowWay }
+        </if>
+        <!-- 流动人口姓名 -->
+        <if test="floatingName !=null and floatingName !=''">
+            and pf.floating_name like concat('%',#{floatingName},'%')
+        </if>
+        <!-- 审核状态(1驳回,2审核通过) -->
+        <if test="approvalStatus !=null and approvalStatus !=''">
+            and a.approval_status=#{approvalStatus}
+        </if>
+
+
+        ORDER BY a.approval_status ASC,pf.input_time DESC
+    </select>
+
+    <!-- 根据警察id查询流动人口列表  flowWay流出或者流入类型（1-流入；2-流出）-->
+    <select id="appQueryPersonFlow" resultMap="outPersonFlowApproval"
+            parameterType="java.util.Map">
+        SELECT * from person_flow pf
+
+        where operator='2' and pf.police_id=#{id} and pf.flow_way=#{flowWay}
+        <!-- 流动人口类型（1-出租、2-建筑工地人员，3-企业单位） -->
+        <if test="floatingPopulationType!=null and floatingPopulationType!=''">
+            and pf.floating_population_type = #{floatingPopulationType}
+        </if>
+        ORDER BY pf.input_time DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+
+    <!-- 根据流动人口id查询 -->
+    <select id="selectByPersonFlowId" resultMap="outPersonFlowApproval"
+            parameterType="java.lang.String">
+    SELECT * from person_flow pf LEFT JOIN  approval a on pf.id=a.person_flow_id
+    where pf.id=#{0}
+
+
+  </select>
+
+
+    <!-- 查询 审核列表（把流动人口列表和户籍业务列表的sql合并） 排序 展示两条 -->
+    <select id="queryApprovalList" resultMap="outApprovalList"
+            parameterType="java.util.Map">
+        SELECT * from ((SELECT p.id as id,p.floating_name as name,p.floating_population_type as type ,p.input_time as
+        dateInputTime
+        ,a.approval_status as approval_status,a.approval_time as dateApprovalTime,null as approvalStage from person_flow p
+        LEFT JOIN approval a on p.id=a.person_flow_id
+        where operator='1' and police_station=#{policeStation} and police_office=#{policeOffice})
+        <!--该警察在审核阶段中-->
+        <if test="approvalSetLevel!=null and approvalSetLevel!=''">
+            UNION
+            (SELECT cr.id as id ,cr.name as name ,cr.current_census_type as type,cr.submit_time as dateInputTime
+            ,ca.approval_status as approval_status, ca.approval_time as dateApprovalTime,approval_stage as approvalStage from census_register cr
+            LEFT JOIN census_approval ca on cr.id=ca.census_register_id
+            LEFT JOIN census_approval_set cas on ca.approval_stage=cas.approval_set_level
+            where cas.approval_set_level=#{approvalSetLevel})
+        </if>
+        ) as t1
+
+        ORDER BY approval_status ASC,dateInputTime DESC
+        limit 2
+    </select>
+
+    <!-- 根据用户登录id查询办事结果 列表 -->
+    <select id="queryResultByUserId" resultMap="outResultList"
+            parameterType="java.util.Map">
+        SELECT * from ((SELECT p.id as id,p.user_id as user_id, p.floating_population_type as type ,p.input_time as
+        input_time
+        ,a.approval_status as approval_status,a.accept_number as accept_number,a.police_id as police_id from person_flow
+        p
+        LEFT JOIN approval a on p.id=a.person_flow_id
+        )
+        UNION
+        <!-- 按id分组取approval_stage最大的值所在行的数据 -->
+        (SELECT a.id ,user_id, type,input_time ,approval_status,accept_number,police_id
+        from (select cr.id as id ,cr.user_id as user_id,cr.current_census_type
+        as type,cr.submit_time as input_time ,ca.approval_status as approval_status, ca.accept_number as
+        accept_number,ca.police_id as police_id ,ca.approval_stage
+        from census_register cr LEFT JOIN census_approval ca on cr.id=ca.census_register_id) a,
+        (SELECT cr.id as id ,max(ca.approval_stage) approval_stage
+        from census_register cr LEFT JOIN census_approval ca on cr.id=ca.census_register_id group by cr.id) b where a.id
+        = b.id and a.approval_stage = b.approval_stage
+        and user_id=#{userId} ) ) as t1
+        where user_id=#{userId}
+        ORDER BY input_time DESC
+    </select>
+
+
+    <!-- 根据流动人口id查询 -->
+    <select id="queryPersonFlowById" resultMap="outPersonFlowApproval"
+            parameterType="java.lang.String">
+SELECT * from person_flow pf LEFT JOIN  approval a on pf.id=a.person_flow_id
+where pf.id=#{id}
+  </select>
+
+
+    <!--流动人口审核输出对象-->
+    <resultMap id="outPersonFlowApproval" type="com.ehootu.flow.model.OutPersonFlowApproval">
+
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="floating_name" jdbcType="VARCHAR" property="floatingName"/>
+        <result column="gender" jdbcType="VARCHAR" property="gender"/>
+        <result column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber"/>
+        <result column="qq" jdbcType="VARCHAR" property="qq"/>
+        <result column="weixin" jdbcType="VARCHAR" property="weixin"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="police_station" jdbcType="VARCHAR" property="policeStation"/>
+        <result column="police_office" jdbcType="VARCHAR" property="policeOffice"/>
+        <result column="work_station" jdbcType="VARCHAR" property="workStation"/>
+        <result column="personal_effects" jdbcType="VARCHAR" property="personalEffects"/>
+        <result column="personal_feature" jdbcType="VARCHAR" property="personalFeature"/>
+        <result column="inflow_time" jdbcType="TIMESTAMP" property="inflowTime"/>
+        <result column="outflow_time" jdbcType="TIMESTAMP" property="outflowTime"/>
+        <result column="flow_reason" jdbcType="VARCHAR" property="flowReason"/>
+        <result column="outflow_to" jdbcType="VARCHAR" property="outflowTo"/>
+        <result column="photographs" jdbcType="VARCHAR" property="photographs"/>
+        <result column="register_address" jdbcType="VARCHAR" property="registerAddress"/>
+        <result column="criminal_record" jdbcType="VARCHAR" property="criminalRecord"/>
+        <result column="action_track" jdbcType="VARCHAR" property="actionTrack"/>
+        <result column="work_company" jdbcType="VARCHAR" property="workCompany"/>
+        <result column="if_input" jdbcType="INTEGER" property="ifInput"/>
+        <result column="floating_population_type" jdbcType="INTEGER" property="floatingPopulationType"/>
+        <result column="flow_way" jdbcType="INTEGER" property="flowWay"/>
+        <result column="input_time" jdbcType="TIMESTAMP" property="dateInputTime"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="number" jdbcType="VARCHAR" property="number"/>
+
+        <result column="accept_number" jdbcType="VARCHAR" property="acceptNumber"/>
+        <result column="approval_status" jdbcType="INTEGER" property="approvalStatus"/>
+        <result column="if_submit_superior" jdbcType="INTEGER" property="ifSubmitSuperior"/>
+        <result column="approval_suggestion" jdbcType="VARCHAR" property="approvalSuggestion"/>
+        <result column="approval_time" jdbcType="TIMESTAMP" property="dateApprovalTime"/>
+        <result column="police_id" jdbcType="VARCHAR" property="policeId"/>
+
+        <result column="police_name" jdbcType="VARCHAR" property="policeName"/>
+        <result column="police_number" jdbcType="VARCHAR" property="policeNumber"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+
+
+    </resultMap>
+
+    <!--警察app列表展示审核列表实体（包括流动人口和户籍业务）-->
+    <resultMap id="outApprovalList" type="com.ehootu.flow.model.OutApprovalList">
+
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="dateInputTime" jdbcType="TIMESTAMP" property="dateInputTime"/>
+        <result column="approval_status" jdbcType="INTEGER" property="approvalStatus"/>
+        <result column="dateApprovalTime" jdbcType="TIMESTAMP" property="dateApprovalTime"/>
+        <result column="approvalStage" jdbcType="INTEGER" property="approvalStage"/>
+    </resultMap>
+
+    <!--输出 办事结果对象-->
+    <resultMap id="outResultList" type="com.ehootu.flow.model.OutResultList">
+
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <id column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="accept_number" jdbcType="VARCHAR" property="acceptNumber"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="input_time" jdbcType="TIMESTAMP" property="inputTime"/>
+        <result column="approval_status" jdbcType="INTEGER" property="approvalStatus"/>
+        <result column="police_id" jdbcType="VARCHAR" property="policeId"/>
+
+    </resultMap>
+
+</mapper>

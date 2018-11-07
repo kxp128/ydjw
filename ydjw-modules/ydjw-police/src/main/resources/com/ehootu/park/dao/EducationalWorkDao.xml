@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.EducationalWorkDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.EducationalWorkEntity" id="educationalWorkMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="publicityTime" column="publicity_time"/>
+        <result property="publicityLocations" column="publicity_locations"/>
+        <result property="publicityObject" column="publicity_object"/>
+        <result property="publicityMethod" column="publicity_method"/>
+        <result property="publicityContent" column="publicity_content"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="date" column="date"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+
+    <select id="queryObject" resultMap="educationalWorkMap">
+		select * from educational_work where id = #{value}
+	</select>
+
+    <select id="select" resultMap="educationalWorkMap">
+		select * from educational_work where enterprise.police_id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="educationalWorkMap">
+        select * from educational_work where police_id = #{policeId}
+        order by id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.EducationalWorkEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into educational_work
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `publicity_time`,
+        `publicity_locations`,
+        `publicity_object`,
+        `publicity_method`,
+        `publicity_content`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `police_id`,
+        `date`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{publicityTime},
+        #{publicityLocations},
+        #{publicityObject},
+        #{publicityMethod},
+        #{publicityContent},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{date},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.EducationalWorkEntity">
+        update educational_work
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="publicityTime != null">`publicity_time` = #{publicityTime},</if>
+            <if test="publicityLocations != null">`publicity_locations` = #{publicityLocations},</if>
+            <if test="publicityObject != null">`publicity_object` = #{publicityObject},</if>
+            <if test="publicityMethod != null">`publicity_method` = #{publicityMethod},</if>
+            <if test="publicityContent != null">`publicity_content` = #{publicityContent},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="taskId != null">`task_id` = #{taskId},</if>
+            <if test="policeId != null">`police_id` = #{policeId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from educational_work where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from educational_work where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

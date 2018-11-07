@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.EnterprisePlatformWorkDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.EnterprisePlatformWorkEntity" id="enterprisePlatformWorkMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="platformInput" column="platform_input"/>
+        <result property="dataUpload" column="data_upload"/>
+        <result property="toExamine" column="to_examine"/>
+        <result property="redPayment" column="red_payment"/>
+        <result property="qualityCheck" column="quality_check"/>
+        <result property="punish" column="punish"/>
+        <result property="date" column="date"/>
+        <result property="taskId" column="task_id"/>
+        <result property="policeId" column="police_id"/>
+        <collection property="publicInformation" ofType="com.ehootu.park.model.PublicInformationEntity">
+            <result property="id" column="id"/>
+            <result property="enterpriseAddress" column="enterprise_address"/>
+            <result property="enterpriseName" column="enterprise_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryObject" resultMap="enterprisePlatformWorkMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from enterprise_platform_work enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.id = #{value}
+	</select>
+    <select id="select" resultMap="enterprisePlatformWorkMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from enterprise_platform_work enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.police_id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="enterprisePlatformWorkMap">
+        select enterprise.*,public.enterprise_address,public.enterprise_name from enterprise_platform_work enterprise
+        left join public_information public on public.id=enterprise.public_id
+        where enterprise.police_id = #{policeId}
+        order by enterprise.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.EnterprisePlatformWorkEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into enterprise_platform_work
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `platform_input`,
+        `data_upload`,
+        `to_examine`,
+        `red_payment`,
+        `quality_check`,
+        `punish`,
+        `police_id`,
+        `date`,
+        `task_id`,
+        `public_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{platformInput},
+        #{dataUpload},
+        #{toExamine},
+        #{redPayment},
+        #{qualityCheck},
+        #{punish},
+        #{policeId},
+        #{date},
+        #{taskId},
+        #{publicId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.EnterprisePlatformWorkEntity">
+        update wechat_platform_work
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="siteName != null">`site_name` = #{siteName},</if>
+            <if test="platformInput != null">`platform_input` = #{platformInput},</if>
+            <if test="dataUpload != null">`data_upload` = #{dataUpload},</if>
+            <if test="toExamine != null">`to_examine` = #{toExamine},</if>
+            <if test="redPayment != null">`red_payment` = #{redPayment},</if>
+            <if test="qualityCheck != null">`quality_check` = #{qualityCheck},</if>
+            <if test="punish != null">`punish` = #{punish},</if>
+            <if test="taskId != null">`task_id` = #{taskId},</if>
+            <if test="policeId != null">`police_id` = #{policeId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from wechat_platform_work where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from wechat_platform_work where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

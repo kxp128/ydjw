@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.census.dao.CouponsMapper">
+  <resultMap id="BaseResultMap" type="com.ehootu.census.model.Coupons">
+    <id column="coupon_id" jdbcType="INTEGER" property="couponId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="coupon_type" jdbcType="TINYINT" property="couponType" />
+    <result column="amount_total" jdbcType="DECIMAL" property="amountTotal" />
+    <result column="amount_coupon" jdbcType="DECIMAL" property="amountCoupon" />
+    <result column="sale_amount" jdbcType="DECIMAL" property="saleAmount" />
+    <result column="original_price" jdbcType="DECIMAL" property="originalPrice" />
+    <result column="recommend_commission" jdbcType="DECIMAL" property="recommendCommission" />
+    <result column="business_id" jdbcType="INTEGER" property="businessId" />
+    <result column="scene" jdbcType="INTEGER" property="scene" />
+    <result column="limit_count" jdbcType="INTEGER" property="limitCount" />
+    <result column="get_total" jdbcType="SMALLINT" property="getTotal" />
+    <result column="is_enable" jdbcType="TINYINT" property="isEnable" />
+    <result column="valid_day" jdbcType="INTEGER" property="validDay" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="activity_des" jdbcType="VARCHAR" property="activityDes" />
+    <result column="images" jdbcType="VARCHAR" property="images" />
+    <result column="verify_info" jdbcType="VARCHAR" property="verifyInfo" />
+    <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    <result column="created" jdbcType="INTEGER" property="created" />
+    <result column="modified" jdbcType="INTEGER" property="modified" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    coupon_id, title, coupon_type, amount_total, amount_coupon, sale_amount, original_price, 
+    recommend_commission, business_id, scene, limit_count, get_total, is_enable, valid_day, 
+    description, activity_des, images, verify_info, deleted, created, modified
+  </sql>
+  <select id="selectByExample" parameterType="com.ehootu.census.model.CouponsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from coupons
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupons
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coupons
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ehootu.census.model.CouponsExample">
+    delete from coupons
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ehootu.census.model.Coupons">
+    insert into coupons (coupon_id, title, coupon_type, 
+      amount_total, amount_coupon, sale_amount, 
+      original_price, recommend_commission, business_id, 
+      scene, limit_count, get_total, 
+      is_enable, valid_day, description, 
+      activity_des, images, verify_info, 
+      deleted, created, modified
+      )
+    values (#{couponId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{couponType,jdbcType=TINYINT}, 
+      #{amountTotal,jdbcType=DECIMAL}, #{amountCoupon,jdbcType=DECIMAL}, #{saleAmount,jdbcType=DECIMAL}, 
+      #{originalPrice,jdbcType=DECIMAL}, #{recommendCommission,jdbcType=DECIMAL}, #{businessId,jdbcType=INTEGER}, 
+      #{scene,jdbcType=INTEGER}, #{limitCount,jdbcType=INTEGER}, #{getTotal,jdbcType=SMALLINT}, 
+      #{isEnable,jdbcType=TINYINT}, #{validDay,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, 
+      #{activityDes,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, #{verifyInfo,jdbcType=VARCHAR}, 
+      #{deleted,jdbcType=TINYINT}, #{created,jdbcType=INTEGER}, #{modified,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ehootu.census.model.Coupons">
+    insert into coupons
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="couponId != null">
+        coupon_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="couponType != null">
+        coupon_type,
+      </if>
+      <if test="amountTotal != null">
+        amount_total,
+      </if>
+      <if test="amountCoupon != null">
+        amount_coupon,
+      </if>
+      <if test="saleAmount != null">
+        sale_amount,
+      </if>
+      <if test="originalPrice != null">
+        original_price,
+      </if>
+      <if test="recommendCommission != null">
+        recommend_commission,
+      </if>
+      <if test="businessId != null">
+        business_id,
+      </if>
+      <if test="scene != null">
+        scene,
+      </if>
+      <if test="limitCount != null">
+        limit_count,
+      </if>
+      <if test="getTotal != null">
+        get_total,
+      </if>
+      <if test="isEnable != null">
+        is_enable,
+      </if>
+      <if test="validDay != null">
+        valid_day,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="activityDes != null">
+        activity_des,
+      </if>
+      <if test="images != null">
+        images,
+      </if>
+      <if test="verifyInfo != null">
+        verify_info,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="modified != null">
+        modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="couponId != null">
+        #{couponId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null">
+        #{couponType,jdbcType=TINYINT},
+      </if>
+      <if test="amountTotal != null">
+        #{amountTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="amountCoupon != null">
+        #{amountCoupon,jdbcType=DECIMAL},
+      </if>
+      <if test="saleAmount != null">
+        #{saleAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="originalPrice != null">
+        #{originalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="recommendCommission != null">
+        #{recommendCommission,jdbcType=DECIMAL},
+      </if>
+      <if test="businessId != null">
+        #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="scene != null">
+        #{scene,jdbcType=INTEGER},
+      </if>
+      <if test="limitCount != null">
+        #{limitCount,jdbcType=INTEGER},
+      </if>
+      <if test="getTotal != null">
+        #{getTotal,jdbcType=SMALLINT},
+      </if>
+      <if test="isEnable != null">
+        #{isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="validDay != null">
+        #{validDay,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="activityDes != null">
+        #{activityDes,jdbcType=VARCHAR},
+      </if>
+      <if test="images != null">
+        #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyInfo != null">
+        #{verifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=TINYINT},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=INTEGER},
+      </if>
+      <if test="modified != null">
+        #{modified,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ehootu.census.model.CouponsExample" resultType="java.lang.Long">
+    select count(*) from coupons
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update coupons
+    <set>
+      <if test="record.couponId != null">
+        coupon_id = #{record.couponId,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.couponType != null">
+        coupon_type = #{record.couponType,jdbcType=TINYINT},
+      </if>
+      <if test="record.amountTotal != null">
+        amount_total = #{record.amountTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amountCoupon != null">
+        amount_coupon = #{record.amountCoupon,jdbcType=DECIMAL},
+      </if>
+      <if test="record.saleAmount != null">
+        sale_amount = #{record.saleAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.originalPrice != null">
+        original_price = #{record.originalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.recommendCommission != null">
+        recommend_commission = #{record.recommendCommission,jdbcType=DECIMAL},
+      </if>
+      <if test="record.businessId != null">
+        business_id = #{record.businessId,jdbcType=INTEGER},
+      </if>
+      <if test="record.scene != null">
+        scene = #{record.scene,jdbcType=INTEGER},
+      </if>
+      <if test="record.limitCount != null">
+        limit_count = #{record.limitCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.getTotal != null">
+        get_total = #{record.getTotal,jdbcType=SMALLINT},
+      </if>
+      <if test="record.isEnable != null">
+        is_enable = #{record.isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="record.validDay != null">
+        valid_day = #{record.validDay,jdbcType=INTEGER},
+      </if>
+      <if test="record.description != null">
+        description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.activityDes != null">
+        activity_des = #{record.activityDes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.images != null">
+        images = #{record.images,jdbcType=VARCHAR},
+      </if>
+      <if test="record.verifyInfo != null">
+        verify_info = #{record.verifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=TINYINT},
+      </if>
+      <if test="record.created != null">
+        created = #{record.created,jdbcType=INTEGER},
+      </if>
+      <if test="record.modified != null">
+        modified = #{record.modified,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update coupons
+    set coupon_id = #{record.couponId,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      coupon_type = #{record.couponType,jdbcType=TINYINT},
+      amount_total = #{record.amountTotal,jdbcType=DECIMAL},
+      amount_coupon = #{record.amountCoupon,jdbcType=DECIMAL},
+      sale_amount = #{record.saleAmount,jdbcType=DECIMAL},
+      original_price = #{record.originalPrice,jdbcType=DECIMAL},
+      recommend_commission = #{record.recommendCommission,jdbcType=DECIMAL},
+      business_id = #{record.businessId,jdbcType=INTEGER},
+      scene = #{record.scene,jdbcType=INTEGER},
+      limit_count = #{record.limitCount,jdbcType=INTEGER},
+      get_total = #{record.getTotal,jdbcType=SMALLINT},
+      is_enable = #{record.isEnable,jdbcType=TINYINT},
+      valid_day = #{record.validDay,jdbcType=INTEGER},
+      description = #{record.description,jdbcType=VARCHAR},
+      activity_des = #{record.activityDes,jdbcType=VARCHAR},
+      images = #{record.images,jdbcType=VARCHAR},
+      verify_info = #{record.verifyInfo,jdbcType=VARCHAR},
+      deleted = #{record.deleted,jdbcType=TINYINT},
+      created = #{record.created,jdbcType=INTEGER},
+      modified = #{record.modified,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.census.model.Coupons">
+    update coupons
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null">
+        coupon_type = #{couponType,jdbcType=TINYINT},
+      </if>
+      <if test="amountTotal != null">
+        amount_total = #{amountTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="amountCoupon != null">
+        amount_coupon = #{amountCoupon,jdbcType=DECIMAL},
+      </if>
+      <if test="saleAmount != null">
+        sale_amount = #{saleAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="originalPrice != null">
+        original_price = #{originalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="recommendCommission != null">
+        recommend_commission = #{recommendCommission,jdbcType=DECIMAL},
+      </if>
+      <if test="businessId != null">
+        business_id = #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="scene != null">
+        scene = #{scene,jdbcType=INTEGER},
+      </if>
+      <if test="limitCount != null">
+        limit_count = #{limitCount,jdbcType=INTEGER},
+      </if>
+      <if test="getTotal != null">
+        get_total = #{getTotal,jdbcType=SMALLINT},
+      </if>
+      <if test="isEnable != null">
+        is_enable = #{isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="validDay != null">
+        valid_day = #{validDay,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="activityDes != null">
+        activity_des = #{activityDes,jdbcType=VARCHAR},
+      </if>
+      <if test="images != null">
+        images = #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyInfo != null">
+        verify_info = #{verifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=TINYINT},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=INTEGER},
+      </if>
+      <if test="modified != null">
+        modified = #{modified,jdbcType=INTEGER},
+      </if>
+    </set>
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ehootu.census.model.Coupons">
+    update coupons
+    set title = #{title,jdbcType=VARCHAR},
+      coupon_type = #{couponType,jdbcType=TINYINT},
+      amount_total = #{amountTotal,jdbcType=DECIMAL},
+      amount_coupon = #{amountCoupon,jdbcType=DECIMAL},
+      sale_amount = #{saleAmount,jdbcType=DECIMAL},
+      original_price = #{originalPrice,jdbcType=DECIMAL},
+      recommend_commission = #{recommendCommission,jdbcType=DECIMAL},
+      business_id = #{businessId,jdbcType=INTEGER},
+      scene = #{scene,jdbcType=INTEGER},
+      limit_count = #{limitCount,jdbcType=INTEGER},
+      get_total = #{getTotal,jdbcType=SMALLINT},
+      is_enable = #{isEnable,jdbcType=TINYINT},
+      valid_day = #{validDay,jdbcType=INTEGER},
+      description = #{description,jdbcType=VARCHAR},
+      activity_des = #{activityDes,jdbcType=VARCHAR},
+      images = #{images,jdbcType=VARCHAR},
+      verify_info = #{verifyInfo,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=TINYINT},
+      created = #{created,jdbcType=INTEGER},
+      modified = #{modified,jdbcType=INTEGER}
+    where coupon_id = #{couponId,jdbcType=INTEGER}
+  </update>
+</mapper>

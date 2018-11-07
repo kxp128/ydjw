@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.ehootu.ydjw.modules</groupId>
+    <artifactId>ydjw-modules</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+    <groupId>com.ehootu.ydjw.police</groupId>
+    <artifactId>ydjw-police</artifactId>
+    <version>${module.version}</version>
+    
+  <dependencies>
+    <dependency>
+      <groupId>com.ehootu.ydjw.common</groupId>
+      <artifactId>ydjw-common</artifactId>
+      <version>${module.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.ehootu.ydjw.flow</groupId>
+      <artifactId>ydjw-flow</artifactId>
+      <version>${module.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.ehootu.ydjw.task</groupId>
+      <artifactId>ydjw-task</artifactId>
+      <version>${module.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>ydjw-police</finalName>
+  </build>
+</project>

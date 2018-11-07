@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.census.dao.CensusRegisterMapper">
+    <resultMap id="BaseResultMap" type="com.ehootu.census.model.CensusRegister">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="birth_date" jdbcType="DATE" property="birthDate"/>
+        <result column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <result column="current_census_register_place" jdbcType="VARCHAR" property="currentCensusRegisterPlace"/>
+        <result column="gender" jdbcType="CHAR" property="gender"/>
+        <result column="spouse_name" jdbcType="VARCHAR" property="spouseName"/>
+        <result column="married_time" jdbcType="TIMESTAMP" property="marriedTime"/>
+        <result column="newborn_name" jdbcType="VARCHAR" property="newbornName"/>
+        <result column="newborn_gender" jdbcType="CHAR" property="newbornGender"/>
+        <result column="newborn_birth_date" jdbcType="DATE" property="newbornBirthDate"/>
+        <result column="relation" jdbcType="VARCHAR" property="relation"/>
+        <result column="cancelled_person_name" jdbcType="VARCHAR" property="cancelledPersonName"/>
+        <result column="cancelled_person_birth_date" jdbcType="DATE" property="cancelledPersonBirthDate"/>
+        <result column="cancelled_person_id_number" jdbcType="VARCHAR" property="cancelledPersonIdNumber"/>
+        <result column="cancelled_person_cause_death" jdbcType="VARCHAR" property="cancelledPersonCauseDeath"/>
+        <result column="attachment_id" jdbcType="VARCHAR" property="attachmentId"/>
+        <result column="current_census_type" jdbcType="INTEGER" property="currentCensusType"/>
+        <result column="current_census_status" jdbcType="INTEGER" property="currentCensusStatus"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime"/>
+        <result column="police_id" jdbcType="VARCHAR" property="policeId"/>
+        <result column="police_station" jdbcType="VARCHAR" property="policeStation"/>
+        <result column="police_office" jdbcType="VARCHAR" property="policeOffice"/>
+        <result column="work_station" jdbcType="VARCHAR" property="workStation"/>
+        <result column="administrative_division" jdbcType="VARCHAR" property="administrativeDivision"/>
+        <result column="operation_type" jdbcType="VARCHAR" property="operationType"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, name, birth_date, id_number, current_census_register_place, gender, spouse_name, 
+    married_time, newborn_name, newborn_gender, newborn_birth_date, relation, cancelled_person_name, 
+    cancelled_person_birth_date, cancelled_person_id_number, cancelled_person_cause_death, 
+    attachment_id, current_census_type, current_census_status, user_id, submit_time, 
+    police_id, police_station, police_office, work_station, administrative_division, 
+    operation_type, create_time, update_time, delete_flag
+  </sql>
+    <select id="selectByExample" parameterType="com.ehootu.census.model.CensusRegisterExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from census_register
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from census_register
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from census_register
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ehootu.census.model.CensusRegisterExample">
+        delete from census_register
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ehootu.census.model.CensusRegister">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into census_register (id, name, birth_date,
+        id_number, current_census_register_place, gender,
+        spouse_name, married_time, newborn_name,
+        newborn_gender, newborn_birth_date, relation,
+        cancelled_person_name, cancelled_person_birth_date,
+        cancelled_person_id_number, cancelled_person_cause_death,
+        attachment_id, current_census_type, current_census_status,
+        user_id, submit_time, police_id,
+        police_station, police_office, work_station,
+        administrative_division, operation_type,
+        create_time, update_time, delete_flag
+        )
+        values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},
+        #{idNumber,jdbcType=VARCHAR}, #{currentCensusRegisterPlace,jdbcType=VARCHAR}, #{gender,jdbcType=CHAR},
+        #{spouseName,jdbcType=VARCHAR}, #{marriedTime,jdbcType=TIMESTAMP}, #{newbornName,jdbcType=VARCHAR},
+        #{newbornGender,jdbcType=CHAR}, #{newbornBirthDate,jdbcType=DATE}, #{relation,jdbcType=VARCHAR},
+        #{cancelledPersonName,jdbcType=VARCHAR}, #{cancelledPersonBirthDate,jdbcType=DATE},
+        #{cancelledPersonIdNumber,jdbcType=VARCHAR}, #{cancelledPersonCauseDeath,jdbcType=VARCHAR},
+        #{attachmentId,jdbcType=VARCHAR}, #{currentCensusType,jdbcType=INTEGER},
+        #{currentCensusStatus,jdbcType=INTEGER},
+        #{userId,jdbcType=VARCHAR}, #{submitTime,jdbcType=TIMESTAMP}, #{policeId,jdbcType=VARCHAR},
+        #{policeStation,jdbcType=VARCHAR}, #{policeOffice,jdbcType=VARCHAR}, #{workStation,jdbcType=VARCHAR},
+        #{administrativeDivision,jdbcType=VARCHAR}, #{operationType,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleteFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.ehootu.census.model.CensusRegister" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into census_register
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="birthDate != null">
+                birth_date,
+            </if>
+            <if test="idNumber != null">
+                id_number,
+            </if>
+            <if test="currentCensusRegisterPlace != null">
+                current_census_register_place,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="spouseName != null">
+                spouse_name,
+            </if>
+            <if test="marriedTime != null">
+                married_time,
+            </if>
+            <if test="newbornName != null">
+                newborn_name,
+            </if>
+            <if test="newbornGender != null">
+                newborn_gender,
+            </if>
+            <if test="newbornBirthDate != null">
+                newborn_birth_date,
+            </if>
+            <if test="relation != null">
+                relation,
+            </if>
+            <if test="cancelledPersonName != null">
+                cancelled_person_name,
+            </if>
+            <if test="cancelledPersonBirthDate != null">
+                cancelled_person_birth_date,
+            </if>
+            <if test="cancelledPersonIdNumber != null">
+                cancelled_person_id_number,
+            </if>
+            <if test="cancelledPersonCauseDeath != null">
+                cancelled_person_cause_death,
+            </if>
+            <if test="attachmentId != null">
+                attachment_id,
+            </if>
+            <if test="currentCensusType != null">
+                current_census_type,
+            </if>
+            <if test="currentCensusStatus != null">
+                current_census_status,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="submitTime != null">
+                submit_time,
+            </if>
+            <if test="policeId != null">
+                police_id,
+            </if>
+            <if test="policeStation != null">
+                police_station,
+            </if>
+            <if test="policeOffice != null">
+                police_office,
+            </if>
+            <if test="workStation != null">
+                work_station,
+            </if>
+            <if test="administrativeDivision != null">
+                administrative_division,
+            </if>
+            <if test="operationType != null">
+                operation_type,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="birthDate != null">
+                #{birthDate,jdbcType=DATE},
+            </if>
+            <if test="idNumber != null">
+                #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="currentCensusRegisterPlace != null">
+                #{currentCensusRegisterPlace,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                #{gender,jdbcType=CHAR},
+            </if>
+            <if test="spouseName != null">
+                #{spouseName,jdbcType=VARCHAR},
+            </if>
+            <if test="marriedTime != null">
+                #{marriedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newbornName != null">
+                #{newbornName,jdbcType=VARCHAR},
+            </if>
+            <if test="newbornGender != null">
+                #{newbornGender,jdbcType=CHAR},
+            </if>
+            <if test="newbornBirthDate != null">
+                #{newbornBirthDate,jdbcType=DATE},
+            </if>
+            <if test="relation != null">
+                #{relation,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelledPersonName != null">
+                #{cancelledPersonName,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelledPersonBirthDate != null">
+                #{cancelledPersonBirthDate,jdbcType=DATE},
+            </if>
+            <if test="cancelledPersonIdNumber != null">
+                #{cancelledPersonIdNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelledPersonCauseDeath != null">
+                #{cancelledPersonCauseDeath,jdbcType=VARCHAR},
+            </if>
+            <if test="attachmentId != null">
+                #{attachmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="currentCensusType != null">
+                #{currentCensusType,jdbcType=INTEGER},
+            </if>
+            <if test="currentCensusStatus != null">
+                #{currentCensusStatus,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="submitTime != null">
+                #{submitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="policeId != null">
+                #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="policeStation != null">
+                #{policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="policeOffice != null">
+                #{policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="workStation != null">
+                #{workStation,jdbcType=VARCHAR},
+            </if>
+            <if test="administrativeDivision != null">
+                #{administrativeDivision,jdbcType=VARCHAR},
+            </if>
+            <if test="operationType != null">
+                #{operationType,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ehootu.census.model.CensusRegisterExample"
+            resultType="java.lang.Long">
+        select count(*) from census_register
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update census_register
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.name != null">
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.birthDate != null">
+                birth_date = #{record.birthDate,jdbcType=DATE},
+            </if>
+            <if test="record.idNumber != null">
+                id_number = #{record.idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.currentCensusRegisterPlace != null">
+                current_census_register_place = #{record.currentCensusRegisterPlace,jdbcType=VARCHAR},
+            </if>
+            <if test="record.gender != null">
+                gender = #{record.gender,jdbcType=CHAR},
+            </if>
+            <if test="record.spouseName != null">
+                spouse_name = #{record.spouseName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.marriedTime != null">
+                married_time = #{record.marriedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.newbornName != null">
+                newborn_name = #{record.newbornName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.newbornGender != null">
+                newborn_gender = #{record.newbornGender,jdbcType=CHAR},
+            </if>
+            <if test="record.newbornBirthDate != null">
+                newborn_birth_date = #{record.newbornBirthDate,jdbcType=DATE},
+            </if>
+            <if test="record.relation != null">
+                relation = #{record.relation,jdbcType=VARCHAR},
+            </if>
+            <if test="record.cancelledPersonName != null">
+                cancelled_person_name = #{record.cancelledPersonName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.cancelledPersonBirthDate != null">
+                cancelled_person_birth_date = #{record.cancelledPersonBirthDate,jdbcType=DATE},
+            </if>
+            <if test="record.cancelledPersonIdNumber != null">
+                cancelled_person_id_number = #{record.cancelledPersonIdNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.cancelledPersonCauseDeath != null">
+                cancelled_person_cause_death = #{record.cancelledPersonCauseDeath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.attachmentId != null">
+                attachment_id = #{record.attachmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.currentCensusType != null">
+                current_census_type = #{record.currentCensusType,jdbcType=INTEGER},
+            </if>
+            <if test="record.currentCensusStatus != null">
+                current_census_status = #{record.currentCensusStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.userId != null">
+                user_id = #{record.userId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.submitTime != null">
+                submit_time = #{record.submitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.policeId != null">
+                police_id = #{record.policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeStation != null">
+                police_station = #{record.policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeOffice != null">
+                police_office = #{record.policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="record.workStation != null">
+                work_station = #{record.workStation,jdbcType=VARCHAR},
+            </if>
+            <if test="record.administrativeDivision != null">
+                administrative_division = #{record.administrativeDivision,jdbcType=VARCHAR},
+            </if>
+            <if test="record.operationType != null">
+                operation_type = #{record.operationType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.deleteFlag != null">
+                delete_flag = #{record.deleteFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update census_register
+        set id = #{record.id,jdbcType=VARCHAR},
+        name = #{record.name,jdbcType=VARCHAR},
+        birth_date = #{record.birthDate,jdbcType=DATE},
+        id_number = #{record.idNumber,jdbcType=VARCHAR},
+        current_census_register_place = #{record.currentCensusRegisterPlace,jdbcType=VARCHAR},
+        gender = #{record.gender,jdbcType=CHAR},
+        spouse_name = #{record.spouseName,jdbcType=VARCHAR},
+        married_time = #{record.marriedTime,jdbcType=TIMESTAMP},
+        newborn_name = #{record.newbornName,jdbcType=VARCHAR},
+        newborn_gender = #{record.newbornGender,jdbcType=CHAR},
+        newborn_birth_date = #{record.newbornBirthDate,jdbcType=DATE},
+        relation = #{record.relation,jdbcType=VARCHAR},
+        cancelled_person_name = #{record.cancelledPersonName,jdbcType=VARCHAR},
+        cancelled_person_birth_date = #{record.cancelledPersonBirthDate,jdbcType=DATE},
+        cancelled_person_id_number = #{record.cancelledPersonIdNumber,jdbcType=VARCHAR},
+        cancelled_person_cause_death = #{record.cancelledPersonCauseDeath,jdbcType=VARCHAR},
+        attachment_id = #{record.attachmentId,jdbcType=VARCHAR},
+        current_census_type = #{record.currentCensusType,jdbcType=INTEGER},
+        current_census_status = #{record.currentCensusStatus,jdbcType=INTEGER},
+        user_id = #{record.userId,jdbcType=VARCHAR},
+        submit_time = #{record.submitTime,jdbcType=TIMESTAMP},
+        police_id = #{record.policeId,jdbcType=VARCHAR},
+        police_station = #{record.policeStation,jdbcType=VARCHAR},
+        police_office = #{record.policeOffice,jdbcType=VARCHAR},
+        work_station = #{record.workStation,jdbcType=VARCHAR},
+        administrative_division = #{record.administrativeDivision,jdbcType=VARCHAR},
+        operation_type = #{record.operationType,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        delete_flag = #{record.deleteFlag,jdbcType=INTEGER}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.census.model.CensusRegister">
+        update census_register
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="birthDate != null">
+                birth_date = #{birthDate,jdbcType=DATE},
+            </if>
+            <if test="idNumber != null">
+                id_number = #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="currentCensusRegisterPlace != null">
+                current_census_register_place = #{currentCensusRegisterPlace,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=CHAR},
+            </if>
+            <if test="spouseName != null">
+                spouse_name = #{spouseName,jdbcType=VARCHAR},
+            </if>
+            <if test="marriedTime != null">
+                married_time = #{marriedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="newbornName != null">
+                newborn_name = #{newbornName,jdbcType=VARCHAR},
+            </if>
+            <if test="newbornGender != null">
+                newborn_gender = #{newbornGender,jdbcType=CHAR},
+            </if>
+            <if test="newbornBirthDate != null">
+                newborn_birth_date = #{newbornBirthDate,jdbcType=DATE},
+            </if>
+            <if test="relation != null">
+                relation = #{relation,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelledPersonName != null">
+                cancelled_person_name = #{cancelledPersonName,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelledPersonBirthDate != null">
+                cancelled_person_birth_date = #{cancelledPersonBirthDate,jdbcType=DATE},
+            </if>
+            <if test="cancelledPersonIdNumber != null">
+                cancelled_person_id_number = #{cancelledPersonIdNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelledPersonCauseDeath != null">
+                cancelled_person_cause_death = #{cancelledPersonCauseDeath,jdbcType=VARCHAR},
+            </if>
+            <if test="attachmentId != null">
+                attachment_id = #{attachmentId,jdbcType=VARCHAR},
+            </if>
+            <if test="currentCensusType != null">
+                current_census_type = #{currentCensusType,jdbcType=INTEGER},
+            </if>
+            <if test="currentCensusStatus != null">
+                current_census_status = #{currentCensusStatus,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="submitTime != null">
+                submit_time = #{submitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="policeId != null">
+                police_id = #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="policeStation != null">
+                police_station = #{policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="policeOffice != null">
+                police_office = #{policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="workStation != null">
+                work_station = #{workStation,jdbcType=VARCHAR},
+            </if>
+            <if test="administrativeDivision != null">
+                administrative_division = #{administrativeDivision,jdbcType=VARCHAR},
+            </if>
+            <if test="operationType != null">
+                operation_type = #{operationType,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ehootu.census.model.CensusRegister">
+    update census_register
+    set name = #{name,jdbcType=VARCHAR},
+      birth_date = #{birthDate,jdbcType=DATE},
+      id_number = #{idNumber,jdbcType=VARCHAR},
+      current_census_register_place = #{currentCensusRegisterPlace,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=CHAR},
+      spouse_name = #{spouseName,jdbcType=VARCHAR},
+      married_time = #{marriedTime,jdbcType=TIMESTAMP},
+      newborn_name = #{newbornName,jdbcType=VARCHAR},
+      newborn_gender = #{newbornGender,jdbcType=CHAR},
+      newborn_birth_date = #{newbornBirthDate,jdbcType=DATE},
+      relation = #{relation,jdbcType=VARCHAR},
+      cancelled_person_name = #{cancelledPersonName,jdbcType=VARCHAR},
+      cancelled_person_birth_date = #{cancelledPersonBirthDate,jdbcType=DATE},
+      cancelled_person_id_number = #{cancelledPersonIdNumber,jdbcType=VARCHAR},
+      cancelled_person_cause_death = #{cancelledPersonCauseDeath,jdbcType=VARCHAR},
+      attachment_id = #{attachmentId,jdbcType=VARCHAR},
+      current_census_type = #{currentCensusType,jdbcType=INTEGER},
+      current_census_status = #{currentCensusStatus,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR},
+      submit_time = #{submitTime,jdbcType=TIMESTAMP},
+      police_id = #{policeId,jdbcType=VARCHAR},
+      police_station = #{policeStation,jdbcType=VARCHAR},
+      police_office = #{policeOffice,jdbcType=VARCHAR},
+      work_station = #{workStation,jdbcType=VARCHAR},
+      administrative_division = #{administrativeDivision,jdbcType=VARCHAR},
+      operation_type = #{operationType,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+    <!--pc端根据审核阶段approvalStage=0查询 微信端添加的 户籍列表 分页-->
+    <select id="queryCensusApprovalByPC" parameterType="com.ehootu.core.util.Query" resultMap="outCensus">
+        SELECT cr.*,ca.* from census_register cr
+        LEFT JOIN census_approval ca on cr.id=ca.census_register_id
+        where ca.approval_stage=0
+
+        <if test="currentCensusType != null">
+            and current_census_type = #{currentCensusType}
+        </if>
+        <!--未审核，则按提交时间降序，否则按审核时间降序排列-->
+        ORDER BY if(ca.approval_status=0,submit_time,approval_time) DESC
+
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    <!--（治安大队和领导app）待审批户籍条件查询 分页展示-->
+    <select id="queryCensusPendingApproval" parameterType="com.ehootu.core.util.Query" resultMap="outCensus">
+        SELECT cr.*,ca.* from census_register cr
+        LEFT JOIN census_approval ca on cr.id=ca.census_register_id
+        where ca.approval_status=0 and ca.approval_stage=#{approvalStage}
+
+        <!-- 登记开始时间条件 小于等于-->
+        <if test="inputStartTime!=null and inputStartTime !=''">
+            and cr.submit_time &lt;= #{inputStartTime}
+        </if>
+        <!-- 登记结束时间条件 大于等于-->
+        <if test="inputEndTime!=null and inputEndTime !=''">
+            and cr.submit_time &gt;=#{inputEndTime}
+        </if>
+        <!-- 审核开始时间条件 小于等于-->
+        <if test="approvalStartTime!=null and approvalStartTime !=''">
+            and ca.approval_time &lt;= #{approvalStartTime}
+        </if>
+        <!-- 审核结束时间条件 -->
+        <if test="approvalEndTime!=null and approvalEndTime !=''">
+            and ca.approval_time &gt;= #{approvalEndTime}
+        </if>
+        <!-- 户籍类型 1 夫妻投靠 2 新生儿 3 户籍注销 -->
+        <if test="currentCensusType!=null and currentCensusType!=''">
+            and cr.current_census_type = #{currentCensusType}
+        </if>
+        <!-- 状态：0-迁入入户;1-迁出2-迁移3-注销 -->
+        <if test="currentCensusStatus !=null and currentCensusStatus !=''">
+            and cr.current_census_status = #{currentCensusStatus}
+        </if>
+        <!-- 申请人姓名 -->
+        <if test="name !=null and name !=''">
+            and cr.name like concat('%',#{name},'%')
+        </if>
+        <!-- 审核结果 (0未审核，1驳回,2审核通过)-->
+        <if test="approvalStatus !=null and approvalStatus !=''">
+            and ca.approval_status=#{approvalStatus}
+        </if>
+
+        ORDER BY ca.approval_status ASC,cr.submit_time DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+
+    <!--（治安大队和领导app）已经审批户籍条件查询 分页展示-->
+    <select id="queryCensusApprovaled" parameterType="com.ehootu.core.util.Query" resultMap="outCensus">
+        SELECT cr.*,ca.* from census_register cr
+        LEFT JOIN census_approval ca on cr.id=ca.census_register_id
+        where ca.approval_status !=0 and ca.police_id=#{policeId}
+
+        <!-- 当前审核阶段(0户政大厅，1治安大队,2领导) -->
+        <if test="approvalStage!=null and approvalStage!=''">
+            and ca.approval_stage = #{approvalStage}
+        </if>
+        <!-- 登记开始时间条件 小于等于-->
+        <if test="inputStartTime!=null and inputStartTime !=''">
+            and cr.submit_time &lt;= #{inputStartTime}
+        </if>
+        <!-- 登记结束时间条件 大于等于-->
+        <if test="inputEndTime!=null and inputEndTime !=''">
+            and cr.submit_time &gt;=#{inputEndTime}
+        </if>
+        <!-- 审核开始时间条件 小于等于-->
+        <if test="approvalStartTime!=null and approvalStartTime !=''">
+            and ca.approval_time &lt;= #{approvalStartTime}
+        </if>
+        <!-- 审核结束时间条件 -->
+        <if test="approvalEndTime!=null and approvalEndTime !=''">
+            and ca.approval_time &gt;= #{approvalEndTime}
+        </if>
+        <!-- 户籍类型 1 夫妻投靠 2 新生儿 3 户籍注销 -->
+        <if test="currentCensusType!=null and currentCensusType!=''">
+            and cr.current_census_type = #{currentCensusType}
+        </if>
+        <!-- 状态：0-迁入入户;1-迁出2-迁移3-注销 -->
+        <if test="currentCensusStatus !=null and currentCensusStatus !=''">
+            and cr.current_census_status = #{currentCensusStatus}
+        </if>
+        <!-- 申请人姓名 -->
+        <if test="name !=null and name !=''">
+            and cr.name like concat('%',#{name},'%')
+        </if>
+        <!-- 审核结果 (0未审核，1驳回,2审核通过)-->
+        <if test="approvalStatus !=null and approvalStatus !=''">
+            and ca.approval_status=#{approvalStatus}
+        </if>
+
+        ORDER BY ca.approval_status ASC,cr.submit_time DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+    <!--根据户籍id查看详情-->
+    <select id="queryCensusById" parameterType="java.util.Map" resultMap="outCensus">
+        SELECT cr.*,cra.*,ca.*,p.*,p.police_station as policeStation,p.police_office as policeOffice from
+        census_register cr
+        LEFT JOIN census_register_attachment cra on cr.attachment_id=cra.id
+        LEFT JOIN census_approval ca on cr.id=ca.census_register_id
+        LEFT JOIN police p on p.id=ca.police_id
+        where cr.id=#{id} and ca.approval_stage = #{approvalStage}
+        <!-- （已审批查看详情的时候传入）警察id -->
+        <if test="policeId!=null and policeId!=''">
+            and p.id=#{policeId}
+        </if>
+    </select>
+    <!--微信服务号个人办事结果 条件查询户籍审批详情
+    type：户籍类型 4 夫妻投靠 5 新生儿 6 户籍注销 流动人口类型（1-出租、2-建筑工地人员，3-企业单位）
+    -->
+    <select id="queryCensusDetail" parameterType="java.util.Map" resultMap="outCensus">
+        SELECT cr.*,ca.*,p.police_station as policeStation,p.police_office as policeOffice from
+        census_register cr
+        LEFT JOIN census_approval ca on cr.id=ca.census_register_id
+        LEFT JOIN police p on p.id=ca.police_id
+        where cr.id=#{id} and cr.current_census_type = #{type}
+        <!-- （已审批查看详情的时候传入）警察id -->
+        <if test="policeId!=null and policeId!=''">
+            and p.id=#{policeId}
+        </if>
+        <!-- 根据当前审核阶段降序排列取一个显示 -->
+        ORDER BY approval_stage DESC LIMIT 1
+    </select>
+
+
+    <!-- pc端总页数 -->
+    <select id="queryCensusApprovalTotal" resultType="int" parameterType="com.ehootu.core.util.Query">
+        select count(*) from census_register cr
+        LEFT JOIN census_approval ca on cr.id=ca.census_register_id
+        where ca.approval_stage=0
+        <if test="currentCensusType != null">
+            and current_census_type = #{currentCensusType}
+        </if>
+    </select>
+
+
+    <resultMap id="outCensus" type="com.ehootu.census.model.OutCensus">
+        <!--户籍登记表-->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="birth_date" jdbcType="DATE" property="birthDate"/>
+        <result column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <result column="current_census_register_place" jdbcType="VARCHAR" property="currentCensusRegisterPlace"/>
+        <result column="gender" jdbcType="CHAR" property="gender"/>
+        <result column="spouse_name" jdbcType="VARCHAR" property="spouseName"/>
+        <result column="married_time" jdbcType="TIMESTAMP" property="marriedTime"/>
+        <result column="newborn_name" jdbcType="VARCHAR" property="newbornName"/>
+        <result column="newborn_gender" jdbcType="CHAR" property="newbornGender"/>
+        <result column="newborn_birth_date" jdbcType="DATE" property="newbornBirthDate"/>
+        <result column="relation" jdbcType="VARCHAR" property="relation"/>
+        <result column="cancelled_person_name" jdbcType="VARCHAR" property="cancelledPersonName"/>
+        <result column="cancelled_person_birth_date" jdbcType="DATE" property="cancelledPersonBirthDate"/>
+        <result column="cancelled_person_id_number" jdbcType="VARCHAR" property="cancelledPersonIdNumber"/>
+        <result column="cancelled_person_cause_death" jdbcType="VARCHAR" property="cancelledPersonCauseDeath"/>
+        <result column="attachment_id" jdbcType="VARCHAR" property="attachmentId"/>
+        <result column="current_census_type" jdbcType="INTEGER" property="currentCensusType"/>
+        <result column="current_census_status" jdbcType="INTEGER" property="currentCensusStatus"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime"/>
+        <result column="police_id" jdbcType="VARCHAR" property="policeId"/>
+        <result column="policeStation" jdbcType="VARCHAR" property="policeStation"/>
+        <result column="policeOffice" jdbcType="VARCHAR" property="policeOffice"/>
+        <result column="work_station" jdbcType="VARCHAR" property="workStation"/>
+        <result column="administrative_division" jdbcType="VARCHAR" property="administrativeDivision"/>
+        <result column="operation_type" jdbcType="VARCHAR" property="operationType"/>
+
+        <!--户籍附件表-->
+        <result column="guardian_written_application" jdbcType="VARCHAR" property="guardianWrittenApplication"/>
+        <result column="medical_proof" jdbcType="VARCHAR" property="medicalProof"/>
+        <result column="birth_certificate" jdbcType="VARCHAR" property="birthCertificate"/>
+        <result column="baby_blood_type" jdbcType="VARCHAR" property="babyBloodType"/>
+        <result column="parents_account" jdbcType="VARCHAR" property="parentsAccount"/>
+        <result column="parents_marriage_certificate" jdbcType="VARCHAR" property="parentsMarriageCertificate"/>
+        <result column="patron_written_application" jdbcType="VARCHAR" property="patronWrittenApplication"/>
+        <result column="married_certificate" jdbcType="VARCHAR" property="marriedCertificate"/>
+        <result column="borth_census_register" jdbcType="VARCHAR" property="borthCensusRegister"/>
+        <result column="borth_card" jdbcType="VARCHAR" property="borthCard"/>
+        <result column="death_certificate" jdbcType="VARCHAR" property="deathCertificate"/>
+        <result column="census_register" jdbcType="VARCHAR" property="censusRegister"/>
+
+        <!--户籍审核表-->
+        <result column="census_register_id" jdbcType="VARCHAR" property="censusRegisterId"/>
+        <result column="accept_number" jdbcType="VARCHAR" property="acceptNumber"/>
+        <result column="approval_type" jdbcType="VARCHAR" property="approvalType"/>
+        <result column="approval_place" jdbcType="VARCHAR" property="approvalPlace"/>
+        <result column="approval_stage" jdbcType="INTEGER" property="approvalStage"/>
+        <result column="approval_status" jdbcType="INTEGER" property="approvalStatus"/>
+        <result column="if_submit_superior" jdbcType="INTEGER" property="ifSubmitSuperior"/>
+        <result column="approval_suggestion" jdbcType="VARCHAR" property="approvalSuggestion"/>
+        <result column="appointment_date" jdbcType="TIMESTAMP" property="appointmentDate"/>
+        <!--前端返回dateApprovalTime-->
+        <result column="approval_time" jdbcType="TIMESTAMP" property="dateApprovalTime"/>
+
+        <result column="police_name" jdbcType="VARCHAR" property="policeName"/>
+        <result column="police_number" jdbcType="VARCHAR" property="policeNumber"/>
+    </resultMap>
+
+</mapper>

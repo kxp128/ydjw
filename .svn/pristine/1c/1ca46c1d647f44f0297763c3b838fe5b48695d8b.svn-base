@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.user.dao.PoliceMapper">
+    <resultMap id="BaseResultMap" type="com.ehootu.user.model.Police">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
+        <result column="police_password" jdbcType="VARCHAR" property="policePassword"/>
+        <result column="police_name" jdbcType="VARCHAR" property="policeName"/>
+        <result column="police_number" jdbcType="VARCHAR" property="policeNumber"/>
+        <result column="police_station" jdbcType="VARCHAR" property="policeStation"/>
+        <result column="police_office" jdbcType="VARCHAR" property="policeOffice"/>
+        <result column="signature" jdbcType="VARCHAR" property="signature"/>
+        <result column="parent_number" jdbcType="VARCHAR" property="parentNumber"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, login_name, police_password, police_name, police_number, police_station, police_office, 
+    signature, parent_number, create_time, update_time, delete_flag
+  </sql>
+    <select id="selectByExample" parameterType="com.ehootu.user.model.PoliceExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from police
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from police
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from police
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ehootu.user.model.PoliceExample">
+        delete from police
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ehootu.user.model.Police">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into police (id, login_name, police_password,
+        police_name, police_number, police_station,
+        police_office, signature, parent_number,
+        create_time, update_time, delete_flag
+        )
+        values (#{id,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, #{policePassword,jdbcType=VARCHAR},
+        #{policeName,jdbcType=VARCHAR}, #{policeNumber,jdbcType=VARCHAR}, #{policeStation,jdbcType=VARCHAR},
+        #{policeOffice,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{parentNumber,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleteFlag,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.ehootu.user.model.Police">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into police
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="loginName != null">
+                login_name,
+            </if>
+            <if test="policePassword != null">
+                police_password,
+            </if>
+            <if test="policeName != null">
+                police_name,
+            </if>
+            <if test="policeNumber != null">
+                police_number,
+            </if>
+            <if test="policeStation != null">
+                police_station,
+            </if>
+            <if test="policeOffice != null">
+                police_office,
+            </if>
+            <if test="signature != null">
+                signature,
+            </if>
+            <if test="parentNumber != null">
+                parent_number,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="loginName != null">
+                #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="policePassword != null">
+                #{policePassword,jdbcType=VARCHAR},
+            </if>
+            <if test="policeName != null">
+                #{policeName,jdbcType=VARCHAR},
+            </if>
+            <if test="policeNumber != null">
+                #{policeNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="policeStation != null">
+                #{policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="policeOffice != null">
+                #{policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="signature != null">
+                #{signature,jdbcType=VARCHAR},
+            </if>
+            <if test="parentNumber != null">
+                #{parentNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ehootu.user.model.PoliceExample" resultType="java.lang.Long">
+        select count(*) from police
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update police
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.loginName != null">
+                login_name = #{record.loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policePassword != null">
+                police_password = #{record.policePassword,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeName != null">
+                police_name = #{record.policeName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeNumber != null">
+                police_number = #{record.policeNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeStation != null">
+                police_station = #{record.policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeOffice != null">
+                police_office = #{record.policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="record.signature != null">
+                signature = #{record.signature,jdbcType=VARCHAR},
+            </if>
+            <if test="record.parentNumber != null">
+                parent_number = #{record.parentNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.deleteFlag != null">
+                delete_flag = #{record.deleteFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update police
+        set id = #{record.id,jdbcType=VARCHAR},
+        login_name = #{record.loginName,jdbcType=VARCHAR},
+        police_password = #{record.policePassword,jdbcType=VARCHAR},
+        police_name = #{record.policeName,jdbcType=VARCHAR},
+        police_number = #{record.policeNumber,jdbcType=VARCHAR},
+        police_station = #{record.policeStation,jdbcType=VARCHAR},
+        police_office = #{record.policeOffice,jdbcType=VARCHAR},
+        signature = #{record.signature,jdbcType=VARCHAR},
+        parent_number = #{record.parentNumber,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        delete_flag = #{record.deleteFlag,jdbcType=INTEGER}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.user.model.Police">
+        update police
+        <set>
+            <if test="loginName != null">
+                login_name = #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="policePassword != null">
+                police_password = #{policePassword,jdbcType=VARCHAR},
+            </if>
+            <if test="policeName != null">
+                police_name = #{policeName,jdbcType=VARCHAR},
+            </if>
+            <if test="policeNumber != null">
+                police_number = #{policeNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="policeStation != null">
+                police_station = #{policeStation,jdbcType=VARCHAR},
+            </if>
+            <if test="policeOffice != null">
+                police_office = #{policeOffice,jdbcType=VARCHAR},
+            </if>
+            <if test="signature != null">
+                signature = #{signature,jdbcType=VARCHAR},
+            </if>
+            <if test="parentNumber != null">
+                parent_number = #{parentNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ehootu.user.model.Police">
+    update police
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      police_password = #{policePassword,jdbcType=VARCHAR},
+      police_name = #{policeName,jdbcType=VARCHAR},
+      police_number = #{policeNumber,jdbcType=VARCHAR},
+      police_station = #{policeStation,jdbcType=VARCHAR},
+      police_office = #{policeOffice,jdbcType=VARCHAR},
+      signature = #{signature,jdbcType=VARCHAR},
+      parent_number = #{parentNumber,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+    <!-- 根据警察id查询警察名称-->
+    <select id="findPoliceNameById" resultType="java.lang.String"
+            parameterType="java.lang.String">
+    SELECT police_name from police p
+
+    where p.id=#{0}
+
+
+  </select>
+
+</mapper>

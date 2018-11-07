@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ydjw.iml" filepath="$PROJECT_DIR$/ydjw.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-modules/ydjw-census/ydjw-census.iml" filepath="$PROJECT_DIR$/ydjw-modules/ydjw-census/ydjw-census.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-common/ydjw-common.iml" filepath="$PROJECT_DIR$/ydjw-common/ydjw-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-modules/ydjw-flow/ydjw-flow.iml" filepath="$PROJECT_DIR$/ydjw-modules/ydjw-flow/ydjw-flow.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-modules/ydjw-modules.iml" filepath="$PROJECT_DIR$/ydjw-modules/ydjw-modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-modules/ydjw-notice/ydjw-notice.iml" filepath="$PROJECT_DIR$/ydjw-modules/ydjw-notice/ydjw-notice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-modules/ydjw-police/ydjw-police.iml" filepath="$PROJECT_DIR$/ydjw-modules/ydjw-police/ydjw-police.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-modules/ydjw-task/ydjw-task.iml" filepath="$PROJECT_DIR$/ydjw-modules/ydjw-task/ydjw-task.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ydjw-web/ydjw-web.iml" filepath="$PROJECT_DIR$/ydjw-web/ydjw-web.iml" />
+    </modules>
+  </component>
+</project>

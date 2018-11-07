@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.flow.dao.RiskAssessmentDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.flow.model.RiskAssessmentEntity" id="riskAssessmentMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="project" column="project"/>
+        <result property="information" column="information"/>
+        <result property="evaluationTimes" column="evaluation_times"/>
+        <result property="evaluationSite" column="evaluation_site"/>
+        <result property="evaluationPersonnel" column="evaluation_personnel"/>
+        <result property="evaluationContent" column="evaluation_content"/>
+        <result property="riskLevel" column="risk_level"/>
+        <result property="disposalMeasures" column="disposal_measures"/>
+        <result property="disposalResult" column="disposal_result"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `project`,  `information`,  `evaluation_times`,  `evaluation_site`,  `evaluation_personnel`,  `evaluation_content`,  `risk_level`,  `disposal_measures`,  `disposal_result`,  `flash_memory_platform`,  `working_picture`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="project != null">AND `project` = #{project}</if>
+        <if test="information != null">AND `information` = #{information}</if>
+        <if test="evaluationTimes != null">AND `evaluation_times` = #{evaluationTimes}</if>
+        <if test="evaluationSite != null">AND `evaluation_site` = #{evaluationSite}</if>
+        <if test="evaluationPersonnel != null">AND `evaluation_personnel` = #{evaluationPersonnel}</if>
+        <if test="evaluationContent != null">AND `evaluation_content` = #{evaluationContent}</if>
+        <if test="riskLevel != null">AND `risk_level` = #{riskLevel}</if>
+        <if test="disposalMeasures != null">AND `disposal_measures` = #{disposalMeasures}</if>
+        <if test="disposalResult != null">AND `disposal_result` = #{disposalResult}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.flow.model.RiskAssessmentEntity" resultMap="riskAssessmentMap">
+		select * from risk_assessment where id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="riskAssessmentMap">
+        select * from risk_assessment
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from risk_assessment
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.flow.model.RiskAssessmentEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into risk_assessment
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `project`,
+        `information`,
+        `evaluation_times`,
+        `evaluation_site`,
+        `evaluation_personnel`,
+        `evaluation_content`,
+        `risk_level`,
+        `disposal_measures`,
+        `disposal_result`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{project},
+        #{information},
+        #{evaluationTimes},
+        #{evaluationSite},
+        #{evaluationPersonnel},
+        #{evaluationContent},
+        #{riskLevel},
+        #{disposalMeasures},
+        #{disposalResult},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.flow.model.RiskAssessmentEntity">
+        update risk_assessment
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="project != null">`project` = #{project},</if>
+            <if test="information != null">`information` = #{information},</if>
+            <if test="evaluationTimes != null">`evaluation_times` = #{evaluationTimes},</if>
+            <if test="evaluationSite != null">`evaluation_site` = #{evaluationSite},</if>
+            <if test="evaluationPersonnel != null">`evaluation_personnel` = #{evaluationPersonnel},</if>
+            <if test="evaluationContent != null">`evaluation_content` = #{evaluationContent},</if>
+            <if test="riskLevel != null">`risk_level` = #{riskLevel},</if>
+            <if test="disposalMeasures != null">`disposal_measures` = #{disposalMeasures},</if>
+            <if test="disposalResult != null">`disposal_result` = #{disposalResult},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from risk_assessment where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from risk_assessment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.sys.dao.DmdzDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.sys.entity.DmdzEntity" id="dmdzMap">
+        <result property="dmdzId" column="dmdz_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="dmdzType" column="dmdz_type"/>
+        <result property="dmdzCode" column="dmdz_code"/>
+        <result property="dmdzName" column="dmdz_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+	<select id="queryObject" resultMap="dmdzMap">
+		select * from dmdz where dmdz_id = #{value}
+	</select>
+
+	<select id="queryList" resultMap="dmdzMap">
+		select * from dmdz
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by dmdz_id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from dmdz 
+	</select>
+	 
+	<insert id="save" parameterType="com.ehootu.sys.entity.DmdzEntity">
+		insert into dmdz
+		(
+			`dmdz_id`, 
+			`parent_id`, 
+			`dmdz_type`, 
+			`dmdz_code`, 
+			`dmdz_name`, 
+			`user_id`, 
+			`del_flag`
+		)
+		values
+		(
+			#{dmdzId}, 
+			#{parentId}, 
+			#{dmdzType}, 
+			#{dmdzCode}, 
+			#{dmdzName}, 
+			#{userId}, 
+			#{delFlag}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.ehootu.sys.entity.DmdzEntity">
+		update dmdz 
+		<set>
+			<if test="parentId != null">`parent_id` = #{parentId}, </if>
+			<if test="dmdzType != null">`dmdz_type` = #{dmdzType}, </if>
+			<if test="dmdzCode != null">`dmdz_code` = #{dmdzCode}, </if>
+			<if test="dmdzName != null">`dmdz_name` = #{dmdzName}, </if>
+			<if test="userId != null">`user_id` = #{userId}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}</if>
+		</set>
+		where dmdz_id = #{dmdzId}
+	</update>
+	
+	<delete id="delete">
+		delete from dmdz where dmdz_id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from dmdz where dmdz_id in 
+		<foreach item="dmdzId" collection="array" open="(" separator="," close=")">
+			#{dmdzId}
+		</foreach>
+	</delete>
+
+</mapper>

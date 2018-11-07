@@ -1,0 +1,40 @@
+package com.ehootu.census.dao;
+
+import com.ehootu.census.model.CensusApprovalSet;
+import com.ehootu.census.model.CensusApprovalSetExample;
+import com.ehootu.core.generic.GenericDao;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+@Repository
+public interface CensusApprovalSetMapper extends GenericDao<CensusApprovalSet,Integer> {
+    long countByExample(CensusApprovalSetExample example);
+
+    int deleteByExample(CensusApprovalSetExample example);
+
+    int deleteByPrimaryKey(String id);
+
+    int insert(CensusApprovalSet record);
+
+    int insertSelective(CensusApprovalSet record);
+
+    List<CensusApprovalSet> selectByExample(CensusApprovalSetExample example);
+
+    CensusApprovalSet selectByPrimaryKey(String id);
+
+    int updateByExampleSelective(@Param("record") CensusApprovalSet record, @Param("example") CensusApprovalSetExample example);
+
+    int updateByExample(@Param("record") CensusApprovalSet record, @Param("example") CensusApprovalSetExample example);
+
+    int updateByPrimaryKeySelective(CensusApprovalSet record);
+
+    int updateByPrimaryKey(CensusApprovalSet record);
+    /**
+     *  //根据警察id查询警察属于哪个审核阶段（不存在一个警察同时在多个不同的审核阶段）
+     * @param params  警察id
+     * @return 审核流程表
+     */
+    CensusApprovalSet queryCensusApprovalSetByPoliceId(Map<String, Object> params);
+}

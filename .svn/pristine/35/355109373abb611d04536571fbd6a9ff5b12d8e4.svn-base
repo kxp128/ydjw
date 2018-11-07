@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="${rc.contextPath}/static/css/bootstrap.min.css">
+<link rel="stylesheet" href="${rc.contextPath}/static/css/font-awesome.min.css">
+<link rel="stylesheet" href="${rc.contextPath}/static/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="${rc.contextPath}/static/plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="${rc.contextPath}/static/css/main.css">
+<script src="${rc.contextPath}/static/libs/jquery.min.js"></script>
+<script src="${rc.contextPath}/static/plugins/layer/layer.js"></script>
+<script src="${rc.contextPath}/static/libs/bootstrap.min.js"></script>
+<script src="${rc.contextPath}/static/libs/vue.min.js"></script>
+<script src="${rc.contextPath}/static/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="${rc.contextPath}/static/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="${rc.contextPath}/static/plugins/ztree/jquery.ztree.all.min.js"></script>
+<link href="${rc.contextPath}/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="${rc.contextPath}/static/libs/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script src="${rc.contextPath}/static/js/common.js"></script>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<a v-if="hasPermission('sys:task:save')" class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			<a v-if="hasPermission('sys:task:update')" class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			<a v-if="hasPermission('sys:task:delete')" class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">任务类型</div>
+			   	<div class="col-sm-10">
+					<select v-model="task.taskType" v-change="indexSelect(this)">
+						<option  value="1">普通任务</option>
+						<option  value="2">常规任务</option>
+					</select>
+			    </div>
+			</div>
+
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">任务内容</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="task.taskContent" placeholder="任务内容"/>
+			    </div>
+			</div>
+
+				<div class="form-group">
+					<div class="col-sm-2 control-label">执行次数</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="task.executionTimes" placeholder="执行次数"/>
+					</div>
+				</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">执行人员</div>
+				<div class="col-sm-10">
+					<ul id="dataTree" class="ztree"></ul>
+				</div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">创建人名字</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="task.createPersonName" placeholder="创建人名字"/>
+			    </div>
+			</div>
+
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">任务开始时间</div>
+				<div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+					<input class="form-control" size="16" type="text" v-model="task.beginTime" readonly>
+					<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				</div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">任务结束时间</div>
+				<div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+					<input class="form-control" size="16" type="text" v-model="task.endTime" readonly>
+					<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				</div>
+				<input type="hidden" id="dtp_input2" value="" /><br/>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div>
+				<div v-show="task.taskStatus!=2">
+				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+				&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/></div>
+				<div v-show="task.taskStatus==2">
+					&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/></div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/static/js/modules/task/task.js"></script>
+</body>
+</html>

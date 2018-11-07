@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.flow.dao.ExplosiveMaterialDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.flow.model.ExplosiveMaterialEntity" id="explosiveMaterialMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="unitName" column="unit_name"/>
+        <result property="inspectionTime" column="inspection_time"/>
+        <result property="inspectionName" column="inspection_name"/>
+        <result property="inspectionPlace" column="inspection_place"/>
+        <result property="inspectionContent" column="inspection_content"/>
+        <result property="inspectionResult" column="inspection_result"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="treatmentSituation" column="treatment_situation"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+        <result property="checkPoliceId" column="check_police_id"/>
+        <result property="publicId" column="public_id"/>
+        <association property="publicInformation"
+                     resultMap="com.ehootu.park.dao.PublicInformationDao.publicInformationMap"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `unit_name`,  `inspection_time`,  `inspection_name`,  `inspection_place`,  `inspection_content`,  `inspection_result`,  `four_patrol_platform`,  `flash_memory_platform`,  `treatment_situation`,  `working_picture`,  `police_id`,  `create_time`,  `task_id`,  `check_police_id`,  `public_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="unitName != null">AND `unit_name` = #{unitName}</if>
+        <if test="inspectionTime != null">AND `inspection_time` = #{inspectionTime}</if>
+        <if test="inspectionName != null">AND `inspection_name` = #{inspectionName}</if>
+        <if test="inspectionPlace != null">AND `inspection_place` = #{inspectionPlace}</if>
+        <if test="inspectionContent != null">AND `inspection_content` = #{inspectionContent}</if>
+        <if test="inspectionResult != null">AND `inspection_result` = #{inspectionResult}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="treatmentSituation != null">AND `treatment_situation` = #{treatmentSituation}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+        <if test="checkPoliceId != null">AND `check_police_id` = #{checkPoliceId}</if>
+        <if test="publicId != null">AND `public_id` = #{publicId}</if>
+    </sql>
+
+    <select id="queryObject" resultType="com.ehootu.flow.model.ExplosiveMaterialEntity"
+            resultMap="explosiveMaterialMap">
+        select em.*,pub.enterprise_address,pub.enterprise_name from explosive_material em
+        left join public_information pub on pub.id = em.public_id
+		where em.id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="explosiveMaterialMap">
+        select em.*,pub.enterprise_address,pub.enterprise_name from explosive_material em
+        left join public_information pub on pub.id = em.public_id
+        where em.police_id = #{policeId} or find_in_set(#{policeId},em.check_police_id)
+        order by em.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from explosive_material
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.flow.model.ExplosiveMaterialEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into explosive_material
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `unit_name`,
+        `inspection_time`,
+        `inspection_name`,
+        `inspection_place`,
+        `inspection_content`,
+        `inspection_result`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `treatment_situation`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `task_id`,
+        `check_police_id`,
+        `public_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{unitName},
+        #{inspectionTime},
+        #{inspectionName},
+        #{inspectionPlace},
+        #{inspectionContent},
+        #{inspectionResult},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{treatmentSituation},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{taskId},
+        #{checkPoliceId},
+        #{publicId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.flow.model.ExplosiveMaterialEntity">
+        update explosive_material
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="unitName != null">`unit_name` = #{unitName},</if>
+            <if test="inspectionTime != null">`inspection_time` = #{inspectionTime},</if>
+            <if test="inspectionName != null">`inspection_name` = #{inspectionName},</if>
+            <if test="inspectionPlace != null">`inspection_place` = #{inspectionPlace},</if>
+            <if test="inspectionContent != null">`inspection_content` = #{inspectionContent},</if>
+            <if test="inspectionResult != null">`inspection_result` = #{inspectionResult},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="treatmentSituation != null">`treatment_situation` = #{treatmentSituation},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId},</if>
+            <if test="checkPoliceId != null">`check_police_id` = #{checkPoliceId},</if>
+            <if test="publicId != null">`public_id` = #{publicId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from explosive_material where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from explosive_material where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

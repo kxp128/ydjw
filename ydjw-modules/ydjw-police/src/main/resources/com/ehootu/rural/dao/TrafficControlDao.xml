@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.rural.dao.TrafficControlDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.rural.model.TrafficControlEntity" id="trafficControlMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeWorkstation" column="police_workstation"/>
+        <result property="managementProject" column="management_project"/>
+        <result property="workingHours" column="working_hours"/>
+        <result property="personnel" column="personnel"/>
+        <result property="workingResults" column="working_results"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+        <association property="sysDictionary" resultMap="com.ehootu.dictionary.dao.SysDictionaryDao.sysDictionaryMap"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_workstation`,  `management_project`,  `working_hours`,  `personnel`,  `working_results`,  `four_patrol_platform`,  `working_picture`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeWorkstation != null">AND `police_workstation` = #{policeWorkstation}</if>
+        <if test="managementProject != null">AND `management_project` = #{managementProject}</if>
+        <if test="workingHours != null">AND `working_hours` = #{workingHours}</if>
+        <if test="personnel != null">AND `personnel` = #{personnel}</if>
+        <if test="workingResults != null">AND `working_results` = #{workingResults}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.rural.model.TrafficControlEntity" resultMap="trafficControlMap">
+		select tc.*, dict.name from traffic_control tc
+		LEFT JOIN sys_dictionary dict ON dict.type='ncdljtgl_glxm' AND dict.value = tc.management_project
+		where tc.id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="trafficControlMap">
+        select tc.*, dict.name from traffic_control tc
+        LEFT JOIN sys_dictionary dict ON dict.type='ncdljtgl_glxm' AND dict.value = tc.management_project
+        where tc.police_id = #{policeId}
+        order by tc.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from traffic_control
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.rural.model.TrafficControlEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into traffic_control
+        (
+        `id`,
+        `police_station`,
+        `police_workstation`,
+        `management_project`,
+        `working_hours`,
+        `personnel`,
+        `working_results`,
+        `four_patrol_platform`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeWorkstation},
+        #{managementProject},
+        #{workingHours},
+        #{personnel},
+        #{workingResults},
+        #{fourPatrolPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.rural.model.TrafficControlEntity">
+        update traffic_control
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeWorkstation != null">`police_workstation` = #{policeWorkstation},</if>
+            <if test="managementProject != null">`management_project` = #{managementProject},</if>
+            <if test="workingHours != null">`working_hours` = #{workingHours},</if>
+            <if test="personnel != null">`personnel` = #{personnel},</if>
+            <if test="workingResults != null">`working_results` = #{workingResults},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from traffic_control where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from traffic_control where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

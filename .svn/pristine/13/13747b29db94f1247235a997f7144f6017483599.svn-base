@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.notice.dao.NoticePoliceMapper">
+    <resultMap id="BaseResultMap" type="com.ehootu.notice.model.NoticePolice">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="notice_id" jdbcType="VARCHAR" property="noticeId"/>
+        <result column="police_id" jdbcType="VARCHAR" property="policeId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="num" jdbcType="INTEGER" property="num"/>
+        <result column="see_flag" jdbcType="INTEGER" property="seeFlag"/>
+        <result column="see_flag_time" jdbcType="TIMESTAMP" property="seeFlagTime"/>
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag"/>
+        <result column="delete_flag_time" jdbcType="TIMESTAMP" property="deleteFlagTime"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, notice_id, police_id, create_time, update_time, num, see_flag, see_flag_time,
+    delete_flag, delete_flag_time
+  </sql>
+    <select id="selectByExample" parameterType="com.ehootu.notice.model.NoticePoliceExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from notice_police
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from notice_police
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from notice_police
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ehootu.notice.model.NoticePoliceExample">
+        delete from notice_police
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ehootu.notice.model.NoticePolice">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into notice_police (id, notice_id, police_id,
+        create_time, update_time, num,
+        see_flag, see_flag_time, delete_flag,
+        delete_flag_time)
+        values (#{id,jdbcType=VARCHAR}, #{noticeId,jdbcType=VARCHAR}, #{policeId,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{num,jdbcType=INTEGER},
+        #{seeFlag,jdbcType=INTEGER}, #{seeFlagTime,jdbcType=TIMESTAMP}, #{deleteFlag,jdbcType=INTEGER},
+        #{deleteFlagTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ehootu.notice.model.NoticePolice">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into notice_police
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="noticeId != null">
+                notice_id,
+            </if>
+            <if test="policeId != null">
+                police_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+            <if test="seeFlag != null">
+                see_flag,
+            </if>
+            <if test="seeFlagTime != null">
+                see_flag_time,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+            <if test="deleteFlagTime != null">
+                delete_flag_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="noticeId != null">
+                #{noticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="policeId != null">
+                #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=INTEGER},
+            </if>
+            <if test="seeFlag != null">
+                #{seeFlag,jdbcType=INTEGER},
+            </if>
+            <if test="seeFlagTime != null">
+                #{seeFlagTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlagTime != null">
+                #{deleteFlagTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ehootu.notice.model.NoticePoliceExample" resultType="java.lang.Long">
+        select count(*) from notice_police
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update notice_police
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.noticeId != null">
+                notice_id = #{record.noticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.policeId != null">
+                police_id = #{record.policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.num != null">
+                num = #{record.num,jdbcType=INTEGER},
+            </if>
+            <if test="record.seeFlag != null">
+                see_flag = #{record.seeFlag,jdbcType=INTEGER},
+            </if>
+            <if test="record.seeFlagTime != null">
+                see_flag_time = #{record.seeFlagTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.deleteFlag != null">
+                delete_flag = #{record.deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="record.deleteFlagTime != null">
+                delete_flag_time = #{record.deleteFlagTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update notice_police
+        set id = #{record.id,jdbcType=VARCHAR},
+        notice_id = #{record.noticeId,jdbcType=VARCHAR},
+        police_id = #{record.policeId,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        num = #{record.num,jdbcType=INTEGER},
+        see_flag = #{record.seeFlag,jdbcType=INTEGER},
+        see_flag_time = #{record.seeFlagTime,jdbcType=TIMESTAMP},
+        delete_flag = #{record.deleteFlag,jdbcType=INTEGER},
+        delete_flag_time = #{record.deleteFlagTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.notice.model.NoticePolice">
+        update notice_police
+        <set>
+            <if test="noticeId != null">
+                notice_id = #{noticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="policeId != null">
+                police_id = #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="num != null">
+                num = #{num,jdbcType=INTEGER},
+            </if>
+            <if test="seeFlag != null">
+                see_flag = #{seeFlag,jdbcType=INTEGER},
+            </if>
+            <if test="seeFlagTime != null">
+                see_flag_time = #{seeFlagTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="deleteFlagTime != null">
+                delete_flag_time = #{deleteFlagTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ehootu.notice.model.NoticePolice">
+    update notice_police
+    set notice_id = #{noticeId,jdbcType=VARCHAR},
+      police_id = #{policeId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      num = #{num,jdbcType=INTEGER},
+      see_flag = #{seeFlag,jdbcType=INTEGER},
+      see_flag_time = #{seeFlagTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      delete_flag_time = #{deleteFlagTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

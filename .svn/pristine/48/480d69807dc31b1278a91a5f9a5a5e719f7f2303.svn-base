@@ -1,0 +1,18 @@
+package com.ehootu.utils;
+
+import java.lang.annotation.*;
+
+/**
+ * 说明：excel导出时显示的title名
+ *
+ * @author lupan
+ * @version 2016/9/12 14:40
+ */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ExcelTitle {
+    public String value() default "未指定标题";
+
+    public String[] needTypes() default "";
+}

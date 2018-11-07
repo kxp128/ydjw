@@ -1,0 +1,39 @@
+package com.ehootu.census.dao;
+
+import com.ehootu.census.model.CensusApproval;
+import com.ehootu.census.model.CensusApprovalExample;
+import com.ehootu.census.model.InputCensus;
+import com.ehootu.core.generic.GenericDao;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+public interface CensusApprovalMapper extends GenericDao<CensusApproval,Integer> {
+    long countByExample(CensusApprovalExample example);
+
+    int deleteByExample(CensusApprovalExample example);
+
+    int deleteByPrimaryKey(String id);
+
+    int insert(CensusApproval record);
+
+    int insertSelective(CensusApproval record);
+
+    List<CensusApproval> selectByExample(CensusApprovalExample example);
+
+    CensusApproval selectByPrimaryKey(String id);
+
+    int updateByExampleSelective(@Param("record") CensusApproval record, @Param("example") CensusApprovalExample example);
+
+    int updateByExample(@Param("record") CensusApproval record, @Param("example") CensusApprovalExample example);
+
+    int updateByPrimaryKeySelective(CensusApproval record);
+
+    int updateByPrimaryKey(CensusApproval record);
+    /**
+     * 根据户籍id 和审核阶段当前审核阶段(0户政大厅，1治安大队,2领导)查询审核对象
+     * @param inputCensus id
+     * @return
+     */
+    CensusApproval selectByCensusId(InputCensus inputCensus);
+}

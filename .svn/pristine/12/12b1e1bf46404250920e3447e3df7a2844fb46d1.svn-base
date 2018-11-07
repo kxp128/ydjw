@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    #parse("/common/head.html")
+    #block("css")#end
+</head>
+<body>
+
+<!--中间内容-->
+#block("content")#end
+
+
+#block("js")#end
+</body>
+</html>

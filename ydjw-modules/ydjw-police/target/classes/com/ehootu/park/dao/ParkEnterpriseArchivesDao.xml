@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.ParkEnterpriseArchivesDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.ParkEnterpriseArchivesEntity" id="parkEnterpriseArchivesMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="enterpriseLegalPerson" column="enterprise_legal_person"/>
+        <result property="enterpriseInternalOrganization" column="enterprise_internal_organization"/>
+        <result property="securityForces" column="security_forces"/>
+        <result property="employeeCount" column="employee_count"/>
+        <result property="businessScope" column="business_scope"/>
+        <result property="businessStatus" column="business_status"/>
+        <result property="judgeStart" column="judge_start"/>
+        <result property="policeId" column="police_id"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="petitionStatus" column="petition_status"/>
+        <result property="petitionDetail" column="petition_detail"/>
+        <result property="date" column="date"/>
+        <result property="taskId" column="task_id"/>
+        <collection property="publicInformation" ofType="com.ehootu.park.model.PublicInformationEntity">
+            <result property="id" column="id"/>
+            <result property="enterpriseAddress" column="enterprise_address"/>
+            <result property="enterpriseName" column="enterprise_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryObject" resultMap="parkEnterpriseArchivesMap">
+		select park.*,public.enterprise_address,public.enterprise_name from park_enterprise_archives park 
+			left join public_information public on public.id=park.public_id
+			where park.id = #{value}
+	</select>
+
+    <select id="queryTotal" resultType="int">
+		select count(*) from park_enterprise_archives
+	</select>
+
+    <select id="select" resultMap="parkEnterpriseArchivesMap">
+		select park.*,public.enterprise_address,public.enterprise_name from park_enterprise_archives park
+			left join public_information public on public.id=park.public_id
+			where park.police_id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="parkEnterpriseArchivesMap">
+        select park.*,public.enterprise_address,public.enterprise_name from park_enterprise_archives park
+        left join public_information public on public.id=park.public_id
+        where park.police_id = #{policeId}
+        order by park.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="selectDetailByDzbm" resultMap="parkEnterpriseArchivesMap">
+		SELECT pk.*,pu.enterprise_name ,pu.enterprise_address
+		FROM park_enterprise_archives pk
+		LEFT JOIN public_information pu ON pk.public_id = pu.id
+		WHERE pu.sign = 1 AND pk.delete_flag = 0 AND pu.diZhiBianMa = #{diZhiBianMa}
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.ParkEnterpriseArchivesEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into park_enterprise_archives
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `enterprise_legal_person`,
+        `enterprise_internal_organization`,
+        `security_forces`,
+        `employee_count`,
+        `business_scope`,
+        `business_status`,
+        `judge_start`,
+        `police_id`,
+        `phone_number`,
+        `petition_status`,
+        `petition_detail`,
+        `date`,
+        `public_id`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{enterpriseLegalPerson},
+        #{enterpriseInternalOrganization},
+        #{securityForces},
+        #{employeeCount},
+        #{businessScope},
+        #{businessStatus},
+        #{judgeStart},
+        #{policeId},
+        #{phoneNumber},
+        #{petitionStatus},
+        #{petitionDetail},
+        #{date},
+        #{publicId},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.ParkEnterpriseArchivesEntity">
+        update park_enterprise_archives
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="enterpriseLegalPerson != null">`enterprise_legal_person` = #{enterpriseLegalPerson},</if>
+            <if test="enterpriseInternalOrganization != null">`enterprise_internal_organization` =
+                #{enterpriseInternalOrganization},
+            </if>
+            <if test="securityForces != null">`security_forces` = #{securityForces},</if>
+            <if test="employeeCount != null">`employee_count` = #{employeeCount},</if>
+            <if test="businessScope != null">`business_scope` = #{businessScope},</if>
+            <if test="businessStatus != null">`business_status` = #{businessStatus},</if>
+            <if test="judgeStart != null">`judge_start` = #{judgeStart},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="phoneNumber != null">`phone_number` = #{phoneNumber},</if>
+            <if test="petition_status != null">`petition_status` = #{petitionStatus},</if>
+            <if test="petition_detail != null">`petition_detail` = #{petitionDetail},</if>
+            <if test="date != null">`date` = #{date},</if>
+            <if test="public_id != null">`public_id` = #{publicId},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateByDzbm">
+        update park_enterprise_archives
+        <set>
+            <if test="deleteFlag != null">`delete_flag` = #{deleteFlag}</if>
+        </set>
+        where public_id IN (SELECT id FROM public_information WHERE diZhiBianMa = #{diZhiBianMa})
+    </update>
+
+    <delete id="delete">
+		delete from park_enterprise_archives where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from park_enterprise_archives where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

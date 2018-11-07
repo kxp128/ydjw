@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.correct.dao.IncontrollableDrugControlDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.correct.model.IncontrollableDrugControlEntity" id="incontrollableDrugControlMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="drugAddicts" column="drug_addicts"/>
+        <result property="runawayTime" column="runaway_time"/>
+        <result property="incontrollableReason" column="incontrollable_reason"/>
+        <result property="presentation" column="presentation"/>
+        <result property="trajectoryTracking" column="trajectory_tracking"/>
+        <result property="behaviorCorrection" column="behavior_correction"/>
+        <result property="percussionTreatment" column="percussion_treatment"/>
+        <result property="compulsoryDetoxification" column="compulsory_detoxification"/>
+        <result property="difficultiesHelp" column="difficulties_help"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `drug_addicts`,  `runaway_time`,  `incontrollable_reason`,  `presentation`,  `trajectory_tracking`,  `behavior_correction`,  `percussion_treatment`,  `compulsory_detoxification`,  `difficulties_help`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="drugAddicts != null">AND `drug_addicts` = #{drugAddicts}</if>
+        <if test="runawayTime != null">AND `runaway_time` = #{runawayTime}</if>
+        <if test="incontrollableReason != null">AND `incontrollable_reason` = #{incontrollableReason}</if>
+        <if test="presentation != null">AND `presentation` = #{presentation}</if>
+        <if test="trajectoryTracking != null">AND `trajectory_tracking` = #{trajectoryTracking}</if>
+        <if test="behaviorCorrection != null">AND `behavior_correction` = #{behaviorCorrection}</if>
+        <if test="percussionTreatment != null">AND `percussion_treatment` = #{percussionTreatment}</if>
+        <if test="compulsoryDetoxification != null">AND `compulsory_detoxification` = #{compulsoryDetoxification}</if>
+        <if test="difficultiesHelp != null">AND `difficulties_help` = #{difficultiesHelp}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.correct.model.IncontrollableDrugControlEntity"
+            resultMap="incontrollableDrugControlMap">
+		select * from incontrollable_drug_control where id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="incontrollableDrugControlMap">
+        select * from incontrollable_drug_control
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from incontrollable_drug_control
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.correct.model.IncontrollableDrugControlEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into incontrollable_drug_control
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `drug_addicts`,
+        `runaway_time`,
+        `incontrollable_reason`,
+        `presentation`,
+        `trajectory_tracking`,
+        `behavior_correction`,
+        `percussion_treatment`,
+        `compulsory_detoxification`,
+        `difficulties_help`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{drugAddicts},
+        #{runawayTime},
+        #{incontrollableReason},
+        #{presentation},
+        #{trajectoryTracking},
+        #{behaviorCorrection},
+        #{percussionTreatment},
+        #{compulsoryDetoxification},
+        #{difficultiesHelp},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.correct.model.IncontrollableDrugControlEntity">
+        update incontrollable_drug_control
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="drugAddicts != null">`drug_addicts` = #{drugAddicts},</if>
+            <if test="runawayTime != null">`runaway_time` = #{runawayTime},</if>
+            <if test="incontrollableReason != null">`incontrollable_reason` = #{incontrollableReason},</if>
+            <if test="presentation != null">`presentation` = #{presentation},</if>
+            <if test="trajectoryTracking != null">`trajectory_tracking` = #{trajectoryTracking},</if>
+            <if test="behaviorCorrection != null">`behavior_correction` = #{behaviorCorrection},</if>
+            <if test="percussionTreatment != null">`percussion_treatment` = #{percussionTreatment},</if>
+            <if test="compulsoryDetoxification != null">`compulsory_detoxification` = #{compulsoryDetoxification},</if>
+            <if test="difficultiesHelp != null">`difficulties_help` = #{difficultiesHelp},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from incontrollable_drug_control where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from incontrollable_drug_control where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

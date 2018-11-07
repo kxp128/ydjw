@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.rural.dao.SocialWorkRecordDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.rural.model.SocialWorkRecordEntity" id="socialWorkRecordMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="policeWorkstation" column="police_workstation"/>
+        <result property="surveyContent" column="survey_content"/>
+        <result property="collectionTime" column="collection_time"/>
+        <result property="collectionSite" column="collection_site"/>
+        <result property="collector" column="collector"/>
+        <result property="collectionObjects" column="collection_objects"/>
+        <result property="collectionContent" column="collection_content"/>
+        <result property="reportingTime" column="reporting_time"/>
+        <result property="reportedObject" column="reported_object"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="remarks" column="remarks"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+        <association property="sysDictionary" resultMap="com.ehootu.dictionary.dao.SysDictionaryDao.sysDictionaryMap"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `police_workstation`,  `survey_content`,  `collection_time`,  `collection_site`,  `collector`,  `collection_objects`,  `collection_content`,  `reporting_time`,  `reported_object`,  `four_patrol_platform`,  `flash_memory_platform`,  `remarks`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="policeWorkstation != null">AND `police_workstation` = #{policeWorkstation}</if>
+        <if test="surveyContent != null">AND `survey_content` = #{surveyContent}</if>
+        <if test="collectionTime != null">AND `collection_time` = #{collectionTime}</if>
+        <if test="collectionSite != null">AND `collection_site` = #{collectionSite}</if>
+        <if test="collector != null">AND `collector` = #{collector}</if>
+        <if test="collectionObjects != null">AND `collection_objects` = #{collectionObjects}</if>
+        <if test="collectionContent != null">AND `collection_content` = #{collectionContent}</if>
+        <if test="reportingTime != null">AND `reporting_time` = #{reportingTime}</if>
+        <if test="reportedObject != null">AND `reported_object` = #{reportedObject}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="remarks != null">AND `remarks` = #{remarks}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.rural.model.SocialWorkRecordEntity"
+            resultMap="socialWorkRecordMap">
+        SELECT swr.*, dict.name FROM social_work_record swr
+        LEFT JOIN sys_dictionary dict ON dict.type='sqmydcgl_dcxm' AND dict.value = swr.survey_content
+        WHERE swr.id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="socialWorkRecordMap">
+        SELECT swr.*, dict.name FROM social_work_record swr
+        LEFT JOIN sys_dictionary dict ON dict.type='sqmydcgl_dcxm' AND dict.value = swr.survey_content
+        WHERE swr.police_id = #{policeId}
+        order by swr.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from social_work_record
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.rural.model.SocialWorkRecordEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into social_work_record
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `police_workstation`,
+        `survey_content`,
+        `collection_time`,
+        `collection_site`,
+        `collector`,
+        `collection_objects`,
+        `collection_content`,
+        `reporting_time`,
+        `reported_object`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `remarks`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{policeWorkstation},
+        #{surveyContent},
+        #{collectionTime},
+        #{collectionSite},
+        #{collector},
+        #{collectionObjects},
+        #{collectionContent},
+        #{reportingTime},
+        #{reportedObject},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{remarks},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.rural.model.SocialWorkRecordEntity">
+        update social_work_record
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="policeWorkstation != null">`police_workstation` = #{policeWorkstation},</if>
+            <if test="surveyContent != null">`survey_content` = #{surveyContent},</if>
+            <if test="collectionTime != null">`collection_time` = #{collectionTime},</if>
+            <if test="collectionSite != null">`collection_site` = #{collectionSite},</if>
+            <if test="collector != null">`collector` = #{collector},</if>
+            <if test="collectionObjects != null">`collection_objects` = #{collectionObjects},</if>
+            <if test="collectionContent != null">`collection_content` = #{collectionContent},</if>
+            <if test="reportingTime != null">`reporting_time` = #{reportingTime},</if>
+            <if test="reportedObject != null">`reported_object` = #{reportedObject},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="remarks != null">`remarks` = #{remarks},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from social_work_record where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from social_work_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

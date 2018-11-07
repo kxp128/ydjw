@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.StarRatingDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.StarRatingEntity" id="starRatingMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="internalSecurityScore" column="internal_security_score"/>
+        <result property="internalSecurityReason" column="internal_security_reason"/>
+        <result property="explosionproofScore" column="explosionproof_score"/>
+        <result property="explosionproofReason" column="explosionproof_reason"/>
+        <result property="jointDefenseScore" column="joint_defense_score"/>
+        <result property="jointDefenseReason" column="joint_defense_reason"/>
+        <result property="managementScore" column="management_score"/>
+        <result property="managementReason" column="management_reason"/>
+        <result property="preventableScore" column="preventable_score"/>
+        <result property="preventableReason" column="preventable_reason"/>
+        <result property="productionScore" column="production_score"/>
+        <result property="productionReason" column="production_reason"/>
+        <result property="educationScore" column="education_score"/>
+        <result property="educationReason" column="education_reason"/>
+        <result property="score" column="score"/>
+        <result property="judgeStart" column="judge_start"/>
+        <result property="policeId" column="police_id"/>
+        <result property="date" column="date"/>
+        <result property="publicId" column="public_id"/>
+        <result property="taskId" column="task_id"/>
+        <association property="publicInformation"
+                     resultMap="com.ehootu.park.dao.PublicInformationDao.publicInformationMap"/>
+
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+		`id`,  `police_station`,  `police_office`,  `internal_security_score`,  `internal_security_reason`,  `explosionproof_score`,  `explosionproof_reason`,  `joint_defense_score`,  `joint_defense_reason`,  `management_score`,  `management_reason`,  `preventable_score`,  `preventable_reason`,  `production_score`,  `production_reason`,  `education_score`,  `education_reason`,  `score`,  `judge_start`,  `police_id`,  `date`,  `public_id`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="internalSecurityScore != null">AND `internal_security_score` = #{internalSecurityScore}</if>
+        <if test="internalSecurityReason != null">AND `internal_security_reason` = #{internalSecurityReason}</if>
+        <if test="explosionproofScore != null">AND `explosionproof_score` = #{explosionproofScore}</if>
+        <if test="explosionproofReason != null">AND `explosionproof_reason` = #{explosionproofReason}</if>
+        <if test="jointDefenseScore != null">AND `joint_defense_score` = #{jointDefenseScore}</if>
+        <if test="jointDefenseReason != null">AND `joint_defense_reason` = #{jointDefenseReason}</if>
+        <if test="managementScore != null">AND `management_score` = #{managementScore}</if>
+        <if test="managementReason != null">AND `management_reason` = #{managementReason}</if>
+        <if test="preventableScore != null">AND `preventable_score` = #{preventableScore}</if>
+        <if test="preventableReason != null">AND `preventable_reason` = #{preventableReason}</if>
+        <if test="productionScore != null">AND `production_score` = #{productionScore}</if>
+        <if test="productionReason != null">AND `production_reason` = #{productionReason}</if>
+        <if test="educationScore != null">AND `education_score` = #{educationScore}</if>
+        <if test="educationReason != null">AND `education_reason` = #{educationReason}</if>
+        <if test="score != null">AND `score` = #{score}</if>
+        <if test="judgeStart != null">AND `judge_start` = #{judgeStart}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="date != null">AND `date` = #{date}</if>
+        <if test="publicId != null">AND `public_id` = #{publicId}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" resultMap="starRatingMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from star_rating enterprise
+		left join public_information public on public.id=enterprise.public_id
+		where enterprise.id = #{value}
+	</select>
+
+    <select id="select" resultMap="starRatingMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from star_rating enterprise
+		left join public_information public on public.id=enterprise.public_id
+		where enterprise.police_id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="starRatingMap">
+        select enterprise.*,public.enterprise_address,public.enterprise_name from star_rating enterprise
+        left join public_information public on public.id=enterprise.public_id
+        where enterprise.police_id = #{policeId}
+        order by id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from star_rating
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.StarRatingEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into star_rating
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `internal_security_score`,
+        `internal_security_reason`,
+        `explosionproof_score`,
+        `explosionproof_reason`,
+        `joint_defense_score`,
+        `joint_defense_reason`,
+        `management_score`,
+        `management_reason`,
+        `preventable_score`,
+        `preventable_reason`,
+        `production_score`,
+        `production_reason`,
+        `education_score`,
+        `education_reason`,
+        `score`,
+        `judge_start`,
+        `police_id`,
+        `date`,
+        `public_id`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{internalSecurityScore},
+        #{internalSecurityReason},
+        #{explosionproofScore},
+        #{explosionproofReason},
+        #{jointDefenseScore},
+        #{jointDefenseReason},
+        #{managementScore},
+        #{managementReason},
+        #{preventableScore},
+        #{preventableReason},
+        #{productionScore},
+        #{productionReason},
+        #{educationScore},
+        #{educationReason},
+        #{score},
+        #{judgeStart},
+        #{policeId},
+        #{date},
+        #{publicId},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.StarRatingEntity">
+        update star_rating
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="internalSecurityScore != null">`internal_security_score` = #{internalSecurityScore},</if>
+            <if test="internalSecurityReason != null">`internal_security_reason` = #{internalSecurityReason},</if>
+            <if test="explosionproofScore != null">`explosionproof_score` = #{explosionproofScore},</if>
+            <if test="explosionproofReason != null">`explosionproof_reason` = #{explosionproofReason},</if>
+            <if test="jointDefenseScore != null">`joint_defense_score` = #{jointDefenseScore},</if>
+            <if test="jointDefenseReason != null">`joint_defense_reason` = #{jointDefenseReason},</if>
+            <if test="managementScore != null">`management_score` = #{managementScore},</if>
+            <if test="managementReason != null">`management_reason` = #{managementReason},</if>
+            <if test="preventableScore != null">`preventable_score` = #{preventableScore},</if>
+            <if test="preventableReason != null">`preventable_reason` = #{preventableReason},</if>
+            <if test="productionScore != null">`production_score` = #{productionScore},</if>
+            <if test="productionReason != null">`production_reason` = #{productionReason},</if>
+            <if test="educationScore != null">`education_score` = #{educationScore},</if>
+            <if test="educationReason != null">`education_reason` = #{educationReason},</if>
+            <if test="score != null">`score` = #{score},</if>
+            <if test="judgeStart != null">`judge_start` = #{judgeStart},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="date != null">`date` = #{date},</if>
+            <if test="publicId != null">`public_id` = #{publicId},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from star_rating where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from star_rating where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

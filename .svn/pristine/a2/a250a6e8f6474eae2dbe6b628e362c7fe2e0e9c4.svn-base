@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.correct.dao.ControlWorkDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.correct.model.ControlWorkEntity" id="controlWorkMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="nameOfPersonnel" column="name_of_personnel"/>
+        <result property="controlCategory" column="control_category"/>
+        <result property="meetingTime" column="meeting_time"/>
+        <result property="meetingPlace" column="meeting_place"/>
+        <result property="realityExpression" column="reality_expression"/>
+        <result property="socialCommunication" column="social_communication"/>
+        <result property="habits" column="habits"/>
+        <result property="activeTrajectory" column="active_trajectory"/>
+        <result property="sourceOfLife" column="source_of_life"/>
+        <result property="ifControl" column="if_control"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `name_of_personnel`,  `control_category`,  `meeting_time`,  `meeting_place`,  `reality_expression`,  `social_communication`,  `habits`,  `active_trajectory`,  `source_of_life`,  `if_control`,  `four_patrol_platform`,  `flash_memory_platform`,  `working_picture`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="nameOfPersonnel != null">AND `name_of_personnel` = #{nameOfPersonnel}</if>
+        <if test="controlCategory != null">AND `control_category` = #{controlCategory}</if>
+        <if test="meetingTime != null">AND `meeting_time` = #{meetingTime}</if>
+        <if test="meetingPlace != null">AND `meeting_place` = #{meetingPlace}</if>
+        <if test="realityExpression != null">AND `reality_expression` = #{realityExpression}</if>
+        <if test="socialCommunication != null">AND `social_communication` = #{socialCommunication}</if>
+        <if test="habits != null">AND `habits` = #{habits}</if>
+        <if test="activeTrajectory != null">AND `active_trajectory` = #{activeTrajectory}</if>
+        <if test="sourceOfLife != null">AND `source_of_life` = #{sourceOfLife}</if>
+        <if test="ifControl != null">AND `if_control` = #{ifControl}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.correct.model.ControlWorkEntity" resultMap="controlWorkMap">
+		select * from control_work where id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="controlWorkMap">
+        select * from control_work
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from control_work
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.correct.model.ControlWorkEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into control_work
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `name_of_personnel`,
+        `control_category`,
+        `meeting_time`,
+        `meeting_place`,
+        `reality_expression`,
+        `social_communication`,
+        `habits`,
+        `active_trajectory`,
+        `source_of_life`,
+        `if_control`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{nameOfPersonnel},
+        #{controlCategory},
+        #{meetingTime},
+        #{meetingPlace},
+        #{realityExpression},
+        #{socialCommunication},
+        #{habits},
+        #{activeTrajectory},
+        #{sourceOfLife},
+        #{ifControl},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.correct.model.ControlWorkEntity">
+        update control_work
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="nameOfPersonnel != null">`name_of_personnel` = #{nameOfPersonnel},</if>
+            <if test="controlCategory != null">`control_category` = #{controlCategory},</if>
+            <if test="meetingTime != null">`meeting_time` = #{meetingTime},</if>
+            <if test="meetingPlace != null">`meeting_place` = #{meetingPlace},</if>
+            <if test="realityExpression != null">`reality_expression` = #{realityExpression},</if>
+            <if test="socialCommunication != null">`social_communication` = #{socialCommunication},</if>
+            <if test="habits != null">`habits` = #{habits},</if>
+            <if test="activeTrajectory != null">`active_trajectory` = #{activeTrajectory},</if>
+            <if test="sourceOfLife != null">`source_of_life` = #{sourceOfLife},</if>
+            <if test="ifControl != null">`if_control` = #{ifControl},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from control_work where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from control_work where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

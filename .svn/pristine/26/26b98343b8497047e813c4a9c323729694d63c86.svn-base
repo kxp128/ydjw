@@ -1,0 +1,385 @@
+package com.ehootu.web.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.ehootu.core.util.HttpRequest;
+import com.ehootu.core.util.StringUtils;
+import com.ehootu.web.model.house.InputDz;
+import com.ehootu.web.model.house.OutPoliceHouse;
+import com.ehootu.web.model.house.OutPutHouse;
+import com.ehootu.web.model.patrol.OutPatrol;
+import com.ehootu.web.model.patrol.PatrolTask;
+import com.ehootu.web.model.patrol.PolicePatrolTask;
+import com.ehootu.web.service.house.HousePersonService;
+import com.ehootu.web.service.house.HouseService;
+import com.ehootu.web.service.patrol.PatrolService;
+import com.ehootu.web.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 
+ * @Title: ScanController.java
+ * @Package com.ehootu.web.controller
+ * @Description: TODO(扫码控制器)
+ * @author zhangyong
+ * @date 2017年6月14日 下午3:44:50
+ * @version V1.0
+ */
+@Controller
+@RequestMapping(value = "/dmdz")
+public class ScanController extends BaseController {
+	@Autowired
+	private HousePersonService HpService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private HouseService houseService;
+	@Autowired
+	private PatrolService patrolService;
+
+	private final static Logger log = LoggerFactory.getLogger(ScanController.class);
+
+	/**
+	 * APP端扫描接口
+	 */
+	@RequestMapping(value = "/scan")
+	public void scanCode(InputDz bean) {
+		String mpdm = bean.getMpdm();
+		log.info("传入的编码长度---》"+mpdm.length());
+		log.info("scanCode:"+bean);
+		////警察巡查 扫码不成功时，---约定mpdm=1， 
+		if ("1".equals(mpdm)) {
+			PolicePatrolScan(bean, null);
+			return;
+		}else {
+			if (StringUtils.isNotBlank(mpdm)) {
+				// 从后往前截取,201106000 ===> 2011106
+//				mpdm = StringUtils.stripEnd(mpdm, "0");
+				 while(mpdm.endsWith("000000")){ 
+					 mpdm = mpdm.substring(0,mpdm.length()-6); 
+				}
+			}
+		}
+		List<InputDz> list = new ArrayList<InputDz>();
+		try{
+			//调用基库数据接口
+			String result = HttpRequest.sendGet(HttpRequest.URL+"queryMpdm.html", "mpdm=" + mpdm);
+			JSONObject aobj = JSONObject.parseObject(result);
+			//取出json中的值
+			JSONArray sobj = aobj.getJSONArray("data");
+			//将json的值转为list对象
+			list = JSONObject.parseArray(sobj.toString(), InputDz.class);
+		}catch (ConnectException e) {
+			e.printStackTrace();
+			resultError("1", "调基库连接异常");
+		}
+		if (bean.getOperation() == 1) {
+			// 微信扫描列表
+			WeiXinHouseList(bean, list);
+		} else if (bean.getOperation() == 2) {
+			// 警察扫描列表
+			PoliceHouseList(list);
+		} else if (bean.getOperation() == 3) {
+			// 警察巡查扫描
+			PolicePatrolScan(bean, list);
+		}
+	}
+	/**
+	 * 调 标准地名地址库接口 通过行政区划名称查询街路巷
+	 * 
+	 * @param
+	 */
+	@RequestMapping(value = "/findJLXMC")
+	public void findJLXMC(String xzqhmc) {
+		// 返回 Json
+		JSONObject resultJson = new JSONObject();
+		try {
+			// 拼凑get请求的URL字串，使用URLEncoder.encode对特殊和不可见字符进行编码
+			String param = "xzqhmc=" + URLEncoder.encode(xzqhmc, "utf-8");
+			String lines = HttpRequest.readContentFromGet(HttpRequest.GET_URL_JLXMC, param);
+			resultSuccess(resultJson.parse(lines));
+		} catch (ConnectException e) {
+			e.printStackTrace();
+			resultError("1", "调基库连接异常");
+		} catch (IOException e) {
+			e.printStackTrace();
+			resultError("1", "IO异常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultError("1", "数据库异常");
+		}
+	}
+
+	/**
+	 * 调 标准地名地址库接口 根据行政区划名称+街路巷 查询门牌号
+	 * 
+	 * @param xzqhmc 行政区划名称
+	 * @param jlxmc 街路巷
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/findMPHMC")
+	public void findMPHMC(String xzqhmc, String jlxmc) {
+		log.info("xzqhmc---" + xzqhmc);
+		log.info("jlxmc---" + jlxmc);
+		// 返回 Json
+		JSONObject resultJson = new JSONObject();
+		try {
+			// 拼凑get请求的URL字串，使用URLEncoder.encode对特殊和不可见字符进行编码
+			String param = "xzqhmc=" + URLEncoder.encode(xzqhmc, "utf-8") + "&jlxmc="
+					+ URLEncoder.encode(jlxmc, "utf-8");
+			String lines = HttpRequest.readContentFromGet(HttpRequest.GET_URL_MPHMC, param);
+			resultSuccess(resultJson.parse(lines));
+		} catch (ConnectException e) {
+			e.printStackTrace();
+			resultError("1", "调基库连接异常");
+		} catch (IOException e) {
+			e.printStackTrace();
+			resultError("1", "IO异常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultError("1", "数据库异常");
+		}
+	}
+
+	/**
+	 * 调 标准地名地址库接口 根据行政区划名称+街路巷+门牌号 查询楼栋号
+	 * 
+	 * @param inputDz 
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findLPHMC")
+	public void findLPHMC(InputDz inputDz) {
+		log.info("inputDz----" + inputDz);
+		log.info("inputDz.getXzqhmc()----" + inputDz.getXzqhmc());
+		log.info("inputDz.getJlxmc()----" + inputDz.getJlxmc());
+		log.info("inputDz.getMphmc()----" + inputDz.getMphmc());
+		log.info("inputDz.getMphhz()----" + inputDz.getMphhz());
+		try {
+			// 返回 Json
+			JSONObject resultJson = new JSONObject();
+			// 拼凑get请求的URL字串，使用URLEncoder.encode对特殊和不可见字符进行编码
+			String param = "xzqhmc=" + URLEncoder.encode(inputDz.getXzqhmc(), "utf-8") + "&jlxmc="
+					+ URLEncoder.encode(inputDz.getJlxmc(), "utf-8") + "&mphmc="
+					+ URLEncoder.encode(inputDz.getMphmc(), "utf-8") + "&mphhz="
+					+ URLEncoder.encode(inputDz.getMphhz(), "utf-8");
+			String lines = HttpRequest.readContentFromGet(HttpRequest.GET_URL_LPHMC, param);
+			// json字符串转换成jsonobject对象
+			JSONObject jso = JSON.parseObject(lines);
+			JSONArray jsarr = jso.getJSONArray("data");
+			// jsonobject对象取得some对应的jsonarray数组
+			JSONObject ao = jsarr.getJSONObject(0);//
+			// jsonarray对象通过getjsonobjext(index)方法取得数组里面的jsonobject对象
+			String lphmc = ao.getString("lphmc");// jsonobject对象通过key直接取得String的值
+			String lphhz = ao.getString("lphhz");
+			log.info("lphhz----" + lphhz);
+			log.info("lphmc----" + lphmc);
+			//如果楼牌号为"",则设为0栋
+			if ("".equals(lphhz)) {
+				JSONObject jObject = new JSONObject();
+				JSONObject jObject2 = new JSONObject();
+				JSONArray jArray = new JSONArray();
+				jObject2.put("lphmc", "0");
+				jObject2.put("lphhz", "栋");
+				jArray.add(jObject2);
+				jObject.put("data", jArray);
+				jObject.put("code", "0");
+				resultSuccess(jObject);
+			} else {
+				log.info("lines----" + lines);
+				resultSuccess(resultJson.parse(lines));
+			}
+		} catch (ConnectException e) {
+			e.printStackTrace();
+			resultError("1", "调基库连接异常");
+		} catch (IOException e) {
+			e.printStackTrace();
+			resultError("1", "IO异常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultError("1", "数据库异常");
+		}
+	}
+
+	/**
+	 * 调 标准地名地址库接口 根据行政区划名称+街路巷+门牌号+楼栋号查询
+	 * 
+	 * @param inputDz
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/findDzList")
+	public void findDz(InputDz inputDz) {
+		log.info("inputDz----" + inputDz);
+		
+		log.info("inputDz.getXzqhmc()----" + inputDz.getXzqhmc());
+		log.info("inputDz.getJlxmc()----" + inputDz.getJlxmc());
+		log.info("inputDz.getMphmc()----" + inputDz.getMphmc());
+		log.info("inputDz.getMphhz()----" + inputDz.getMphhz());
+		log.info("inputDz.getLphmc()----" + inputDz.getLphmc());
+		log.info("inputDz.getLphhz()----" + inputDz.getLphhz());
+		log.info("inputDz.getHousePersonRole()----" + inputDz.getHousePersonRole());
+		// 返回 Json
+		JSONObject resultJson = new JSONObject();
+		try {
+			// 拼凑get请求的URL字串，使用URLEncoder.encode对特殊和不可见字符进行编码
+			String param = "xzqhmc=" + URLEncoder.encode(inputDz.getXzqhmc(), "utf-8") + "&jlxmc="
+					+ URLEncoder.encode(inputDz.getJlxmc(), "utf-8") + "&mphmc="
+					+ URLEncoder.encode(inputDz.getMphmc(), "utf-8") + "&mphhz="
+					+ URLEncoder.encode(inputDz.getMphhz(), "utf-8") + "&lphmc="
+					+ URLEncoder.encode(inputDz.getLphmc(), "utf-8") + "&lphhz="
+					+ URLEncoder.encode(inputDz.getLphhz(), "utf-8") + "&page="
+					+ URLEncoder.encode(String.valueOf(inputDz.getPage()), "utf-8") + "&limit="
+					+ URLEncoder.encode(String.valueOf(inputDz.getLimit()), "utf-8");
+			String lines = HttpRequest.readContentFromGet(HttpRequest.GET_URL_DZ, param);
+			// String 转json对象
+			JSONObject jsonObject = resultJson.parseObject(lines);
+			
+			//分页
+//			log.info("page---" + (JSONObject) jsonObject.get("page"));
+			// 获取key为page的value
+//			JSONObject objectPage = (JSONObject) jsonObject.get("page");
+//			log.info("list--" + objectPage.getJSONArray("list"));
+			// jsonobject对象取得list对应的jsonarray数组
+//			JSONArray jsarr = objectPage.getJSONArray("list");
+			// jsonobject对象取得page对应的jsonarray数组
+			
+			//不 分页展示
+			JSONArray jsarr = jsonObject.getJSONArray("page");
+			List<InputDz> list = new ArrayList<InputDz>();
+			list = JSONObject.parseArray(jsarr.toString(), InputDz.class);
+			//公众号群众搜索
+			if (inputDz.getOperation() == 1) {
+				//搜一搜 列表展示
+				List<OutPutHouse> outs = houseService.WeiXinHouseList(inputDz, list);
+				resultSuccess2(outs);
+			}else {
+				//警察搜索
+				PoliceHouseList( list);
+			}
+		} catch (ConnectException e) {
+			e.printStackTrace();
+			resultError("1", "调基库连接异常");
+		} catch (IOException e) {
+			e.printStackTrace();
+			resultError("1", "IO异常");
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultError("1", "数据库异常");
+		}
+	}
+	
+	/**
+	 * 微信扫码扫出房屋信息
+	 * @param input
+	 * @param list
+	 */
+	public void WeiXinHouseList(InputDz input, List<InputDz> list) {
+		
+		log.info("WeiXinHouseList InputDz:"+input);
+		try {
+			int role = input.getHousePersonRole();
+			List<OutPutHouse> outs = new ArrayList<>();
+			//游客扫描房屋信息
+			if(role==2){
+				outs = houseService.touristHouseList(list);
+			}else{
+				//房东登记扫码以及其他扫码数据
+				outs = houseService.WeiXinHouseList(input, list);
+			}
+			
+			resultSuccess2(outs);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultError("1", "数据库异常");
+		}
+		
+	}
+	
+	/**
+	 * 扫码查询楼栋号信息
+	 * @param list
+	 */
+	public void PoliceHouseList(List<InputDz> list) {
+		try {
+			List<OutPoliceHouse> outs = houseService.PoliceHouseList(list);
+			resultSuccess(outs);
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultError("1", "数据库异常");
+		}
+	}
+	
+	/**
+	 * 扫码配置巡查任务
+	 * @param bean
+	 * @param list
+	 */
+	private void PolicePatrolScan(InputDz bean, List<InputDz> list) {
+		
+		try {
+			PolicePatrolTask ppt = new PolicePatrolTask();
+			// InputD中么有PatrolTaskId字段，借用ID字段传参数；
+			ppt.setId(bean.getId());
+			OutPatrol outPatrol = patrolService.patrolScanDetails(ppt);
+			if (outPatrol == null)
+				outPatrol = new OutPatrol();
+			PatrolTask pt = outPatrol.getPatrolTask();
+			//匹配状态 0未匹配 1匹配
+			outPatrol.setRatioSatus(0);
+			//警察巡查 扫码不成功时，---约定mpdm=1， 
+			if ("1".equals(bean.getMpdm())) {
+				////匹配状态 0未匹配 1匹配
+				outPatrol.setRatioSatus(0);
+			}else {
+				InputDz dz = list != null && list.size() > 0 ? list.get(0) : null;
+				if (pt != null && dz != null) {
+					if (dz.getAddress().equals(pt.getPatrolAddress()))
+						//对比任务地址和基库扫码数据对比相同设置 1
+						outPatrol.setRatioSatus(1);
+				}
+			}
+			resultSuccess(outPatrol);
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultError("1", "数据库异常");
+		}
+	}
+
+
+
+	public static void main(String[] args) {
+		// String json =
+		// "{\"name\":\"刘德华\",\"age\":35,\"some\":[{\"k1\":\"v1\",\"k2\":\"v2\"},{\"k3\":\"v3\",\"k4\":\"v4\"}]}";
+		// JSONObject jso = JSON.parseObject(json);// json字符串转换成jsonobject对象
+		// System.out.println("初始jsonObject:\n" + jso + "\n");
+		// JSONArray jsarr = jso.getJSONArray("some");//
+		// jsonobject对象取得some对应的jsonarray数组
+		// System.out.println("jsonObject里面的jsonarray:\n" + jsarr + "\n");
+		// JSONObject ao = jsarr.getJSONObject(0);//
+		// jsonarray对象通过getjsonobjext(index)方法取得数组里面的jsonobject对象
+		// System.out.println("jsonObject里面的jsonarray里面的第一个jsonobject：\n" + ao +
+		// "\n");
+		// String vString = ao.getString("k1");// jsonobject对象通过key直接取得String的值
+		// System.out.println("jsonObject里面的jsonarray里面的第一个jsonobject里的键值对对k1取值：\n"
+		// + vString + "\n");
+		String mString = "510603000585000052000003000001000000000000";
+		String mString1 = "510603000585000052000003000001000000000008";
+
+		System.out.println(StringUtils.stripEnd(mString, "0"));
+		System.out.println(StringUtils.stripEnd(mString1, "0"));
+	}
+
+}

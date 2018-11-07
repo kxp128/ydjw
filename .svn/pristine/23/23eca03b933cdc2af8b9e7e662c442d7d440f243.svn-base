@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.rural.dao.RealNameManagementDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.rural.model.RealNameManagementEntity" id="realNameManagementMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="policeWorkstation" column="police_workstation"/>
+        <result property="examiner" column="examiner"/>
+        <result property="inspectionTime" column="inspection_time"/>
+        <result property="inspectionPlace" column="inspection_place"/>
+        <result property="inspectionContent" column="inspection_content"/>
+        <result property="inspectionStatus" column="inspection_status"/>
+        <result property="penalties" column="penalties"/>
+        <result property="arrestSuspects" column="arrest_suspects"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="checkPoliceId" column="check_police_id"/>
+        <result property="publicId" column="public_id"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+        <association property="publicInformation"
+                     resultMap="com.ehootu.park.dao.PublicInformationDao.publicInformationMap"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `police_workstation`,  `examiner`,  `inspection_time`,  `inspection_place`,  `inspection_content`,  `inspection_status`,  `penalties`,  `arrest_suspects`,  `four_patrol_platform`,  `flash_memory_platform`,  `working_picture`,  `check_police_id`,  `public_id`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="policeWorkstation != null">AND `police_workstation` = #{policeWorkstation}</if>
+        <if test="examiner != null">AND `examiner` = #{examiner}</if>
+        <if test="inspectionTime != null">AND `inspection_time` = #{inspectionTime}</if>
+        <if test="inspectionPlace != null">AND `inspection_place` = #{inspectionPlace}</if>
+        <if test="inspectionContent != null">AND `inspection_content` = #{inspectionContent}</if>
+        <if test="inspectionStatus != null">AND `inspection_status` = #{inspectionStatus}</if>
+        <if test="penalties != null">AND `penalties` = #{penalties}</if>
+        <if test="arrestSuspects != null">AND `arrest_suspects` = #{arrestSuspects}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="checkPoliceId != null">AND `check_police_id` = #{checkPoliceId}</if>
+        <if test="publicId != null">AND `public_id` = #{publicId}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.rural.model.RealNameManagementEntity"
+            resultMap="realNameManagementMap">
+        select rnm.*, pub.enterprise_address, pub.enterprise_name, pub.date from real_name_management rnm
+        left join public_information pub on pub.id=rnm.public_id
+        where rnm.id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="realNameManagementMap">
+        select rnm.*,pub.enterprise_address,pub.enterprise_name from real_name_management rnm
+        left join public_information pub on pub.id=rnm.public_id
+        where rnm.police_id = #{policeId} or find_in_set(#{policeId},rnm.check_police_id)
+        order by rnm.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from real_name_management
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.rural.model.RealNameManagementEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into real_name_management
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `police_workstation`,
+        `examiner`,
+        `inspection_time`,
+        `inspection_place`,
+        `inspection_content`,
+        `inspection_status`,
+        `penalties`,
+        `arrest_suspects`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `check_police_id`,
+        `public_id`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{policeWorkstation},
+        #{examiner},
+        #{inspectionTime},
+        #{inspectionPlace},
+        #{inspectionContent},
+        #{inspectionStatus},
+        #{penalties},
+        #{arrestSuspects},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{checkPoliceId},
+        #{publicId},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.rural.model.RealNameManagementEntity">
+        update real_name_management
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="policeWorkstation != null">`police_workstation` = #{policeWorkstation},</if>
+            <if test="examiner != null">`examiner` = #{examiner},</if>
+            <if test="inspectionTime != null">`inspection_time` = #{inspectionTime},</if>
+            <if test="inspectionPlace != null">`inspection_place` = #{inspectionPlace},</if>
+            <if test="inspectionContent != null">`inspection_content` = #{inspectionContent},</if>
+            <if test="inspectionStatus != null">`inspection_status` = #{inspectionStatus},</if>
+            <if test="penalties != null">`penalties` = #{penalties},</if>
+            <if test="arrestSuspects != null">`arrest_suspects` = #{arrestSuspects},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="checkPoliceId != null">`check_police_id` = #{checkPoliceId},</if>
+            <if test="publicId != null">`public_id` = #{publicId},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from real_name_management where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from real_name_management where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

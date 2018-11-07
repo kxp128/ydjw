@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.flow.dao.ApprovalMapper">
+    <resultMap id="BaseResultMap" type="com.ehootu.flow.model.Approval">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="person_flow_id" jdbcType="VARCHAR" property="personFlowId"/>
+        <result column="accept_number" jdbcType="VARCHAR" property="acceptNumber"/>
+        <result column="approval_status" jdbcType="INTEGER" property="approvalStatus"/>
+        <result column="if_submit_superior" jdbcType="INTEGER" property="ifSubmitSuperior"/>
+        <result column="approval_suggestion" jdbcType="VARCHAR" property="approvalSuggestion"/>
+        <result column="appointment_date" jdbcType="VARCHAR" property="appointmentDate"/>
+        <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime"/>
+        <result column="police_id" jdbcType="VARCHAR" property="policeId"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="if_send_red_packet" jdbcType="INTEGER" property="ifSendRedPacket"/>
+        <result column="leave_message" jdbcType="VARCHAR" property="leaveMessage"/>
+        <result column="red_packet_money" jdbcType="VARCHAR" property="redPacketMoney"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, person_flow_id, accept_number, approval_status, if_submit_superior, approval_suggestion, 
+    appointment_date, approval_time, police_id, update_time, if_send_red_packet, leave_message, 
+    red_packet_money
+  </sql>
+    <select id="selectByExample" parameterType="com.ehootu.flow.model.ApprovalExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from approval
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from approval
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from approval
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ehootu.flow.model.ApprovalExample">
+        delete from approval
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ehootu.flow.model.Approval">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into approval (id, person_flow_id, accept_number,
+        approval_status, if_submit_superior, approval_suggestion,
+        appointment_date, approval_time, police_id,
+        update_time, if_send_red_packet, leave_message,
+        red_packet_money)
+        values (#{id,jdbcType=VARCHAR}, #{personFlowId,jdbcType=VARCHAR}, #{acceptNumber,jdbcType=VARCHAR},
+        #{approvalStatus,jdbcType=INTEGER}, #{ifSubmitSuperior,jdbcType=INTEGER},
+        #{approvalSuggestion,jdbcType=VARCHAR},
+        #{appointmentDate,jdbcType=VARCHAR}, #{approvalTime,jdbcType=TIMESTAMP}, #{policeId,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=TIMESTAMP}, #{ifSendRedPacket,jdbcType=INTEGER}, #{leaveMessage,jdbcType=VARCHAR},
+        #{redPacketMoney,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ehootu.flow.model.Approval">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into approval
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="personFlowId != null">
+                person_flow_id,
+            </if>
+            <if test="acceptNumber != null">
+                accept_number,
+            </if>
+            <if test="approvalStatus != null">
+                approval_status,
+            </if>
+            <if test="ifSubmitSuperior != null">
+                if_submit_superior,
+            </if>
+            <if test="approvalSuggestion != null">
+                approval_suggestion,
+            </if>
+            <if test="appointmentDate != null">
+                appointment_date,
+            </if>
+            <if test="approvalTime != null">
+                approval_time,
+            </if>
+            <if test="policeId != null">
+                police_id,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="ifSendRedPacket != null">
+                if_send_red_packet,
+            </if>
+            <if test="leaveMessage != null">
+                leave_message,
+            </if>
+            <if test="redPacketMoney != null">
+                red_packet_money,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="personFlowId != null">
+                #{personFlowId,jdbcType=VARCHAR},
+            </if>
+            <if test="acceptNumber != null">
+                #{acceptNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalStatus != null">
+                #{approvalStatus,jdbcType=INTEGER},
+            </if>
+            <if test="ifSubmitSuperior != null">
+                #{ifSubmitSuperior,jdbcType=INTEGER},
+            </if>
+            <if test="approvalSuggestion != null">
+                #{approvalSuggestion,jdbcType=VARCHAR},
+            </if>
+            <if test="appointmentDate != null">
+                #{appointmentDate,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalTime != null">
+                #{approvalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="policeId != null">
+                #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ifSendRedPacket != null">
+                #{ifSendRedPacket,jdbcType=INTEGER},
+            </if>
+            <if test="leaveMessage != null">
+                #{leaveMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="redPacketMoney != null">
+                #{redPacketMoney,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ehootu.flow.model.ApprovalExample" resultType="java.lang.Long">
+        select count(*) from approval
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update approval
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.personFlowId != null">
+                person_flow_id = #{record.personFlowId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acceptNumber != null">
+                accept_number = #{record.acceptNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.approvalStatus != null">
+                approval_status = #{record.approvalStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.ifSubmitSuperior != null">
+                if_submit_superior = #{record.ifSubmitSuperior,jdbcType=INTEGER},
+            </if>
+            <if test="record.approvalSuggestion != null">
+                approval_suggestion = #{record.approvalSuggestion,jdbcType=VARCHAR},
+            </if>
+            <if test="record.appointmentDate != null">
+                appointment_date = #{record.appointmentDate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.approvalTime != null">
+                approval_time = #{record.approvalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.policeId != null">
+                police_id = #{record.policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.ifSendRedPacket != null">
+                if_send_red_packet = #{record.ifSendRedPacket,jdbcType=INTEGER},
+            </if>
+            <if test="record.leaveMessage != null">
+                leave_message = #{record.leaveMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="record.redPacketMoney != null">
+                red_packet_money = #{record.redPacketMoney,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update approval
+        set id = #{record.id,jdbcType=VARCHAR},
+        person_flow_id = #{record.personFlowId,jdbcType=VARCHAR},
+        accept_number = #{record.acceptNumber,jdbcType=VARCHAR},
+        approval_status = #{record.approvalStatus,jdbcType=INTEGER},
+        if_submit_superior = #{record.ifSubmitSuperior,jdbcType=INTEGER},
+        approval_suggestion = #{record.approvalSuggestion,jdbcType=VARCHAR},
+        appointment_date = #{record.appointmentDate,jdbcType=VARCHAR},
+        approval_time = #{record.approvalTime,jdbcType=TIMESTAMP},
+        police_id = #{record.policeId,jdbcType=VARCHAR},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        if_send_red_packet = #{record.ifSendRedPacket,jdbcType=INTEGER},
+        leave_message = #{record.leaveMessage,jdbcType=VARCHAR},
+        red_packet_money = #{record.redPacketMoney,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.flow.model.Approval">
+        update approval
+        <set>
+            <if test="personFlowId != null">
+                person_flow_id = #{personFlowId,jdbcType=VARCHAR},
+            </if>
+            <if test="acceptNumber != null">
+                accept_number = #{acceptNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalStatus != null">
+                approval_status = #{approvalStatus,jdbcType=INTEGER},
+            </if>
+            <if test="ifSubmitSuperior != null">
+                if_submit_superior = #{ifSubmitSuperior,jdbcType=INTEGER},
+            </if>
+            <if test="approvalSuggestion != null">
+                approval_suggestion = #{approvalSuggestion,jdbcType=VARCHAR},
+            </if>
+            <if test="appointmentDate != null">
+                appointment_date = #{appointmentDate,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalTime != null">
+                approval_time = #{approvalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="policeId != null">
+                police_id = #{policeId,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ifSendRedPacket != null">
+                if_send_red_packet = #{ifSendRedPacket,jdbcType=INTEGER},
+            </if>
+            <if test="leaveMessage != null">
+                leave_message = #{leaveMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="redPacketMoney != null">
+                red_packet_money = #{redPacketMoney,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ehootu.flow.model.Approval">
+    update approval
+    set person_flow_id = #{personFlowId,jdbcType=VARCHAR},
+      accept_number = #{acceptNumber,jdbcType=VARCHAR},
+      approval_status = #{approvalStatus,jdbcType=INTEGER},
+      if_submit_superior = #{ifSubmitSuperior,jdbcType=INTEGER},
+      approval_suggestion = #{approvalSuggestion,jdbcType=VARCHAR},
+      appointment_date = #{appointmentDate,jdbcType=VARCHAR},
+      approval_time = #{approvalTime,jdbcType=TIMESTAMP},
+      police_id = #{policeId,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      if_send_red_packet = #{ifSendRedPacket,jdbcType=INTEGER},
+      leave_message = #{leaveMessage,jdbcType=VARCHAR},
+      red_packet_money = #{redPacketMoney,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+    <!--根据用户id查询审核结果 按登记时间降序排列-->
+    <select id="queryApprovalByUserId" parameterType="java.lang.String"
+            resultType="com.ehootu.flow.model.OutPersonFlowApproval">
+        SELECT * from approval a LEFT JOIN person_flow pf
+        on pf.id = a.person_flow_id and pf.delete_flag=0
+        <where>
+            <!-- 删除标记 -->
+            <if test="userId!=null">
+                and pf.user_id = #{userId}
+            </if>
+        </where>
+        ORDER BY pf.input_time DESC
+    </select>
+    <!--根据用户id查询-->
+    <select id="selectByPersonFlowId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * from  approval WHERE person_flow_id=#{0}
+  </select>
+</mapper>

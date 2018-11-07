@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.flow.dao.BlockingEventDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.flow.model.BlockingEventEntity" id="blockingEventMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="blockingTime" column="blocking_time"/>
+        <result property="blockingLocation" column="blocking_location"/>
+        <result property="blockingPersonnel" column="blocking_personnel"/>
+        <result property="blockingReason" column="blocking_reason"/>
+        <result property="blockingLoss" column="blocking_loss"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `blocking_time`,  `blocking_location`,  `blocking_personnel`,  `blocking_reason`,  `blocking_loss`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="blockingTime != null">AND `blocking_time` = #{blockingTime}</if>
+        <if test="blockingLocation != null">AND `blocking_location` = #{blockingLocation}</if>
+        <if test="blockingPersonnel != null">AND `blocking_personnel` = #{blockingPersonnel}</if>
+        <if test="blockingReason != null">AND `blocking_reason` = #{blockingReason}</if>
+        <if test="blockingLoss != null">AND `blocking_loss` = #{blockingLoss}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.flow.model.BlockingEventEntity" resultMap="blockingEventMap">
+		select * from blocking_event where id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="blockingEventMap">
+        select * from blocking_event
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from blocking_event
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.flow.model.BlockingEventEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into blocking_event
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `blocking_time`,
+        `blocking_location`,
+        `blocking_personnel`,
+        `blocking_reason`,
+        `blocking_loss`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{blockingTime},
+        #{blockingLocation},
+        #{blockingPersonnel},
+        #{blockingReason},
+        #{blockingLoss},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.flow.model.BlockingEventEntity">
+        update blocking_event
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="blockingTime != null">`blocking_time` = #{blockingTime},</if>
+            <if test="blockingLocation != null">`blocking_location` = #{blockingLocation},</if>
+            <if test="blockingPersonnel != null">`blocking_personnel` = #{blockingPersonnel},</if>
+            <if test="blockingReason != null">`blocking_reason` = #{blockingReason},</if>
+            <if test="blockingLoss != null">`blocking_loss` = #{blockingLoss},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from blocking_event where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from blocking_event where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

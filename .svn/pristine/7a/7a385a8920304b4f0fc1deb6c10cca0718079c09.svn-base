@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.rural.dao.PeaceWorkDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.rural.model.PeaceWorkEntity" id="peaceWorkMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="policeWorkstation" column="police_workstation"/>
+        <result property="managementProject" column="management_project"/>
+        <result property="inspectionTime" column="inspection_time"/>
+        <result property="inspectionPlace" column="inspection_place"/>
+        <result property="examiner" column="examiner"/>
+        <result property="checkMode" column="check_mode"/>
+        <result property="examinationResult" column="examination_result"/>
+        <result property="treatmentSituation" column="treatment_situation"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="remarks" column="remarks"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="checkPoliceId" column="check_police_id"/>
+        <result property="publicId" column="public_id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="managementProjectName" column="glxm_name"/>
+        <association property="publicInformation"
+                     resultMap="com.ehootu.park.dao.PublicInformationDao.publicInformationMap"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `police_workstation`,  `management_project`,  `inspection_time`,  `inspection_place`,  `examiner`,  `check_mode`,  `examination_result`,  `treatment_situation`,  `four_patrol_platform`,  `flash_memory_platform`,  `remarks`,  `working_picture`,  `police_id`,  `create_time`,  `check_police_id`,  `public_id`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="policeWorkstation != null">AND `police_workstation` = #{policeWorkstation}</if>
+        <if test="managementProject != null">AND `management_project` = #{managementProject}</if>
+        <if test="inspectionTime != null">AND `inspection_time` = #{inspectionTime}</if>
+        <if test="inspectionPlace != null">AND `inspection_place` = #{inspectionPlace}</if>
+        <if test="examiner != null">AND `examiner` = #{examiner}</if>
+        <if test="checkMode != null">AND `check_mode` = #{checkMode}</if>
+        <if test="examinationResult != null">AND `examination_result` = #{examinationResult}</if>
+        <if test="treatmentSituation != null">AND `treatment_situation` = #{treatmentSituation}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="remarks != null">AND `remarks` = #{remarks}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="checkPoliceId != null">AND `check_police_id` = #{checkPoliceId}</if>
+        <if test="publicId != null">AND `public_id` = #{publicId}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.rural.model.PeaceWorkEntity" resultMap="peaceWorkMap">
+        select pw.*, pub.enterprise_address, pub.enterprise_name, pub.date from peace_work pw
+        left join public_information pub on pub.id=pw.public_id
+        where pw.id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="peaceWorkMap">
+        select pw.*,pub.enterprise_address,pub.enterprise_name,dict.name as glxm_name from peace_work pw
+        left join public_information pub on pub.id=pw.public_id
+        LEFT JOIN sys_dictionary dict ON dict.type='zazdgzjl_glxm' AND dict.value = pw.management_project
+        where pw.police_id = #{policeId} or find_in_set(#{policeId},pw.check_police_id)
+        order by pw.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from peace_work
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.rural.model.PeaceWorkEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into peace_work
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `police_workstation`,
+        `management_project`,
+        `inspection_time`,
+        `inspection_place`,
+        `examiner`,
+        `check_mode`,
+        `examination_result`,
+        `treatment_situation`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `remarks`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `check_police_id`,
+        `public_id`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{policeWorkstation},
+        #{managementProject},
+        #{inspectionTime},
+        #{inspectionPlace},
+        #{examiner},
+        #{checkMode},
+        #{examinationResult},
+        #{treatmentSituation},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{remarks},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{checkPoliceId},
+        #{publicId},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.rural.model.PeaceWorkEntity">
+        update peace_work
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="policeWorkstation != null">`police_workstation` = #{policeWorkstation},</if>
+            <if test="managementProject != null">`management_project` = #{managementProject},</if>
+            <if test="inspectionTime != null">`inspection_time` = #{inspectionTime},</if>
+            <if test="inspectionPlace != null">`inspection_place` = #{inspectionPlace},</if>
+            <if test="examiner != null">`examiner` = #{examiner},</if>
+            <if test="checkMode != null">`check_mode` = #{checkMode},</if>
+            <if test="examinationResult != null">`examination_result` = #{examinationResult},</if>
+            <if test="treatmentSituation != null">`treatment_situation` = #{treatmentSituation},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="remarks != null">`remarks` = #{remarks},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="checkPoliceId != null">`check_police_id` = #{checkPoliceId},</if>
+            <if test="publicId != null">`public_id` = #{publicId},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from peace_work where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from peace_work where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

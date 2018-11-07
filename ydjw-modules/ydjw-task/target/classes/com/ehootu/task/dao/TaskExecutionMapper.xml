@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.task.dao.TaskExecutionMapper">
+    <resultMap id="BaseResultMap" type="com.ehootu.task.model.TaskExecution">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="task_id" jdbcType="VARCHAR" property="taskId"/>
+        <result column="table_id" jdbcType="VARCHAR" property="tableId"/>
+        <result column="table_name" jdbcType="VARCHAR" property="tableName"/>
+        <result column="son_task_name" jdbcType="VARCHAR" property="sonTaskName"/>
+        <result column="page_name" jdbcType="VARCHAR" property="pageName"/>
+        <result column="executor_ids" jdbcType="VARCHAR" property="executorIds"/>
+        <result column="flag" jdbcType="INTEGER" property="flag"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="spare_field1" jdbcType="INTEGER" property="spareField1"/>
+        <result column="spare_field2" jdbcType="INTEGER" property="spareField2"/>
+        <result column="spare_field3" jdbcType="INTEGER" property="spareField3"/>
+        <result column="spare_field4" jdbcType="VARCHAR" property="spareField4"/>
+        <result column="spare_field5" jdbcType="VARCHAR" property="spareField5"/>
+        <result column="spare_field6" jdbcType="VARCHAR" property="spareField6"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, task_id, table_id, table_name, son_task_name, page_name, executor_ids, flag, 
+    create_time, update_time, spare_field1, spare_field2, spare_field3, spare_field4, 
+    spare_field5, spare_field6
+  </sql>
+    <select id="selectByExample" parameterType="com.ehootu.task.model.TaskExecutionExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from task_execution
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from task_execution
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from task_execution
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ehootu.task.model.TaskExecutionExample">
+        delete from task_execution
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ehootu.task.model.TaskExecution">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into task_execution (id, task_id, table_id,
+        table_name, son_task_name, page_name,
+        executor_ids, flag, create_time,
+        update_time, spare_field1, spare_field2,
+        spare_field3, spare_field4, spare_field5,
+        spare_field6)
+        values (#{id,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{tableId,jdbcType=VARCHAR},
+        #{tableName,jdbcType=VARCHAR}, #{sonTaskName,jdbcType=VARCHAR}, #{pageName,jdbcType=VARCHAR},
+        #{executorIds,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}, #{spareField1,jdbcType=INTEGER}, #{spareField2,jdbcType=INTEGER},
+        #{spareField3,jdbcType=INTEGER}, #{spareField4,jdbcType=VARCHAR}, #{spareField5,jdbcType=VARCHAR},
+        #{spareField6,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.ehootu.task.model.TaskExecution">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into task_execution
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="taskId != null">
+                task_id,
+            </if>
+            <if test="tableId != null">
+                table_id,
+            </if>
+            <if test="tableName != null">
+                table_name,
+            </if>
+            <if test="sonTaskName != null">
+                son_task_name,
+            </if>
+            <if test="pageName != null">
+                page_name,
+            </if>
+            <if test="executorIds != null">
+                executor_ids,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="spareField1 != null">
+                spare_field1,
+            </if>
+            <if test="spareField2 != null">
+                spare_field2,
+            </if>
+            <if test="spareField3 != null">
+                spare_field3,
+            </if>
+            <if test="spareField4 != null">
+                spare_field4,
+            </if>
+            <if test="spareField5 != null">
+                spare_field5,
+            </if>
+            <if test="spareField6 != null">
+                spare_field6,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="taskId != null">
+                #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null">
+                #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableName != null">
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="sonTaskName != null">
+                #{sonTaskName,jdbcType=VARCHAR},
+            </if>
+            <if test="pageName != null">
+                #{pageName,jdbcType=VARCHAR},
+            </if>
+            <if test="executorIds != null">
+                #{executorIds,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="spareField1 != null">
+                #{spareField1,jdbcType=INTEGER},
+            </if>
+            <if test="spareField2 != null">
+                #{spareField2,jdbcType=INTEGER},
+            </if>
+            <if test="spareField3 != null">
+                #{spareField3,jdbcType=INTEGER},
+            </if>
+            <if test="spareField4 != null">
+                #{spareField4,jdbcType=VARCHAR},
+            </if>
+            <if test="spareField5 != null">
+                #{spareField5,jdbcType=VARCHAR},
+            </if>
+            <if test="spareField6 != null">
+                #{spareField6,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ehootu.task.model.TaskExecutionExample" resultType="java.lang.Long">
+        select count(*) from task_execution
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update task_execution
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=VARCHAR},
+            </if>
+            <if test="record.taskId != null">
+                task_id = #{record.taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.tableId != null">
+                table_id = #{record.tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.tableName != null">
+                table_name = #{record.tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.sonTaskName != null">
+                son_task_name = #{record.sonTaskName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.pageName != null">
+                page_name = #{record.pageName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.executorIds != null">
+                executor_ids = #{record.executorIds,jdbcType=VARCHAR},
+            </if>
+            <if test="record.flag != null">
+                flag = #{record.flag,jdbcType=INTEGER},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.spareField1 != null">
+                spare_field1 = #{record.spareField1,jdbcType=INTEGER},
+            </if>
+            <if test="record.spareField2 != null">
+                spare_field2 = #{record.spareField2,jdbcType=INTEGER},
+            </if>
+            <if test="record.spareField3 != null">
+                spare_field3 = #{record.spareField3,jdbcType=INTEGER},
+            </if>
+            <if test="record.spareField4 != null">
+                spare_field4 = #{record.spareField4,jdbcType=VARCHAR},
+            </if>
+            <if test="record.spareField5 != null">
+                spare_field5 = #{record.spareField5,jdbcType=VARCHAR},
+            </if>
+            <if test="record.spareField6 != null">
+                spare_field6 = #{record.spareField6,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update task_execution
+        set id = #{record.id,jdbcType=VARCHAR},
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+        table_id = #{record.tableId,jdbcType=VARCHAR},
+        table_name = #{record.tableName,jdbcType=VARCHAR},
+        son_task_name = #{record.sonTaskName,jdbcType=VARCHAR},
+        page_name = #{record.pageName,jdbcType=VARCHAR},
+        executor_ids = #{record.executorIds,jdbcType=VARCHAR},
+        flag = #{record.flag,jdbcType=INTEGER},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        spare_field1 = #{record.spareField1,jdbcType=INTEGER},
+        spare_field2 = #{record.spareField2,jdbcType=INTEGER},
+        spare_field3 = #{record.spareField3,jdbcType=INTEGER},
+        spare_field4 = #{record.spareField4,jdbcType=VARCHAR},
+        spare_field5 = #{record.spareField5,jdbcType=VARCHAR},
+        spare_field6 = #{record.spareField6,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.task.model.TaskExecution">
+        update task_execution
+        <set>
+            <if test="taskId != null">
+                task_id = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableId != null">
+                table_id = #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableName != null">
+                table_name = #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="sonTaskName != null">
+                son_task_name = #{sonTaskName,jdbcType=VARCHAR},
+            </if>
+            <if test="pageName != null">
+                page_name = #{pageName,jdbcType=VARCHAR},
+            </if>
+            <if test="executorIds != null">
+                executor_ids = #{executorIds,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="spareField1 != null">
+                spare_field1 = #{spareField1,jdbcType=INTEGER},
+            </if>
+            <if test="spareField2 != null">
+                spare_field2 = #{spareField2,jdbcType=INTEGER},
+            </if>
+            <if test="spareField3 != null">
+                spare_field3 = #{spareField3,jdbcType=INTEGER},
+            </if>
+            <if test="spareField4 != null">
+                spare_field4 = #{spareField4,jdbcType=VARCHAR},
+            </if>
+            <if test="spareField5 != null">
+                spare_field5 = #{spareField5,jdbcType=VARCHAR},
+            </if>
+            <if test="spareField6 != null">
+                spare_field6 = #{spareField6,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ehootu.task.model.TaskExecution">
+    update task_execution
+    set task_id = #{taskId,jdbcType=VARCHAR},
+      table_id = #{tableId,jdbcType=VARCHAR},
+      table_name = #{tableName,jdbcType=VARCHAR},
+      son_task_name = #{sonTaskName,jdbcType=VARCHAR},
+      page_name = #{pageName,jdbcType=VARCHAR},
+      executor_ids = #{executorIds,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      spare_field1 = #{spareField1,jdbcType=INTEGER},
+      spare_field2 = #{spareField2,jdbcType=INTEGER},
+      spare_field3 = #{spareField3,jdbcType=INTEGER},
+      spare_field4 = #{spareField4,jdbcType=VARCHAR},
+      spare_field5 = #{spareField5,jdbcType=VARCHAR},
+      spare_field6 = #{spareField6,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

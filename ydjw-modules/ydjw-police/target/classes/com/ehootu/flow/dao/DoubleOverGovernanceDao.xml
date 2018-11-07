@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.flow.dao.DoubleOverGovernanceDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.flow.model.DoubleOverGovernanceEntity" id="doubleOverGovernanceMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="siteName" column="site_name"/>
+        <result property="inspectionTime" column="inspection_time"/>
+        <result property="inspectionName" column="inspection_name"/>
+        <result property="inspectionMode" column="inspection_mode"/>
+        <result property="discoverProblems" column="discover_problems"/>
+        <result property="treatmentResult" column="treatment_result"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+        <result property="checkPoliceId" column="check_police_id"/>
+        <result property="publicId" column="public_id"/>
+        <association property="publicInformation"
+                     resultMap="com.ehootu.park.dao.PublicInformationDao.publicInformationMap"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `site_name`,  `inspection_time`,  `inspection_name`,  `inspection_mode`,  `discover_problems`,  `treatment_result`,  `four_patrol_platform`,  `flash_memory_platform`,  `working_picture`,  `police_id`,  `create_time`,  `task_id`,  `check_police_id`,  `public_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="siteName != null">AND `site_name` = #{siteName}</if>
+        <if test="inspectionTime != null">AND `inspection_time` = #{inspectionTime}</if>
+        <if test="inspectionName != null">AND `inspection_name` = #{inspectionName}</if>
+        <if test="inspectionMode != null">AND `inspection_mode` = #{inspectionMode}</if>
+        <if test="discoverProblems != null">AND `discover_problems` = #{discoverProblems}</if>
+        <if test="treatmentResult != null">AND `treatment_result` = #{treatmentResult}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+        <if test="checkPoliceId != null">AND `check_police_id` = #{checkPoliceId}</if>
+        <if test="publicId != null">AND `public_id` = #{publicId}</if>
+    </sql>
+
+    <select id="queryObject" resultType="com.ehootu.flow.model.DoubleOverGovernanceEntity"
+            resultMap="doubleOverGovernanceMap">
+        select dog.*,pub.enterprise_address,pub.enterprise_name from double_over_governance dog
+        left join public_information pub on pub.id = dog.public_id
+        where dog.id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="doubleOverGovernanceMap">
+        select dog.*,pub.enterprise_address,pub.enterprise_name from double_over_governance dog
+        left join public_information pub on pub.id = dog.public_id
+        where dog.police_id = #{policeId} or find_in_set(#{policeId},dog.check_police_id)
+        order by dog.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from double_over_governance
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.flow.model.DoubleOverGovernanceEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into double_over_governance
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `site_name`,
+        `inspection_time`,
+        `inspection_name`,
+        `inspection_mode`,
+        `discover_problems`,
+        `treatment_result`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `task_id`,
+        `check_police_id`,
+        `public_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{siteName},
+        #{inspectionTime},
+        #{inspectionName},
+        #{inspectionMode},
+        #{discoverProblems},
+        #{treatmentResult},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{taskId},
+        #{checkPoliceId},
+        #{publicId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.flow.model.DoubleOverGovernanceEntity">
+        update double_over_governance
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="siteName != null">`site_name` = #{siteName},</if>
+            <if test="inspectionTime != null">`inspection_time` = #{inspectionTime},</if>
+            <if test="inspectionName != null">`inspection_name` = #{inspectionName},</if>
+            <if test="inspectionMode != null">`inspection_mode` = #{inspectionMode},</if>
+            <if test="discoverProblems != null">`discover_problems` = #{discoverProblems},</if>
+            <if test="treatmentResult != null">`treatment_result` = #{treatmentResult},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId},</if>
+            <if test="checkPoliceId != null">`check_police_id` = #{checkPoliceId},</if>
+            <if test="publicId != null">`public_id` = #{publicId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from double_over_governance where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from double_over_governance where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

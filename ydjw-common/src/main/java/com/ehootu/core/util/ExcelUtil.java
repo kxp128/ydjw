@@ -1,0 +1,424 @@
+package com.ehootu.core.util;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFComment;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/**
+ * @Title:ExcelUtil
+ * @Author: KongXiaoPing
+ * @Date: 2017-08-29 15:46
+ * @Description: excel导入导出工具类
+ */
+public class ExcelUtil<T> implements Serializable {
+
+    private static final long serialVersionUID = 551970754610248636L;
+    private final static Logger log = LoggerFactory.getLogger(ExcelUtil.class);
+
+    private final static String pattern = "yyyy-MM-dd";
+
+    private Class<T> clazz;
+
+    public ExcelUtil() {
+    }
+
+    public ExcelUtil(Class<T> clazz) {
+        this.clazz = clazz;
+    }
+
+
+    /**
+     * 将excel表单数据源的数据导入到list 兼容后缀名xls和xlsx
+     *
+     * @param sheetName 工作表的名称
+     * @param file      java输入流
+     */
+    public List<T> getExcelToList(String sheetName, File file) throws Exception {
+        List<T> list = new ArrayList<T>();
+        try {
+            //检查文件
+            checkFile(file);
+            //获得Workbook工作薄对象
+            Workbook book = getWorkBook(file);
+            Sheet sheet = null;
+            // 如果指定sheet名,则取指定sheet中的内容.
+            if (StringUtils.isNotBlank(sheetName)) {
+                sheet = book.getSheet(sheetName);
+            }
+            // 如果传入的sheet名不存在则默认指向第1个sheet.
+            if (sheet == null) {
+                sheet = book.getSheetAt(0);
+            }
+            // 得到数据的行数
+            int rows = sheet.getLastRowNum();
+
+            // 有数据时才处理
+            if (rows > 0) {
+                // 得到类的所有field
+                Field[] allFields = clazz.getDeclaredFields();
+                // 定义一个map用于存放列的序号和field
+                Map<Integer, Field> fieldsMap = new HashMap<Integer, Field>();
+                for (int i = 0, index = 0; i < allFields.length; i++) {
+                    Field field = allFields[i];
+                    // 将有注解的field存放到map中
+                    if (field.isAnnotationPresent(ExcelTitle.class)) {
+                        // 设置类的私有字段属性可访问
+                        field.setAccessible(true);
+                        fieldsMap.put(index, field);
+                        index++;
+                    }
+                }
+                // 从第2行开始取数据,默认第一行是表头
+                for (int i = 1, len = rows; i <= len; i++) {
+                    // 得到一行中的所有单元格对象.
+                    Row row = sheet.getRow(i);
+//                    HSSFRow row = sheet.getRow(i);
+                    T entity = null;
+                    System.out.println("=======读第" + i + "行====");
+                    //循环每行下面的列，从0列开始，fieldsMap.size()指有注解的列数
+                    for (int j = 0; j < fieldsMap.size(); j++) {
+                        // 如果不存在实例则新建
+                        entity = (entity == null ? clazz.newInstance() : entity);
+                        // 从map中得到对应列的field
+                        Field field = fieldsMap.get(j);
+                        if (field == null) {
+                            continue;
+                        }
+                        // 取得类型,并根据对象类型设置值.
+                        Class<?> fieldType = field.getType();
+                        if (fieldType == null) {
+                            continue;
+                        }
+                        // 单元格中的内容.
+                        Cell c = row.getCell(j);
+                        System.out.println("cell[" + j + "]--" + c);
+                        //判断是否为null
+                        if (null == c) {
+                            //日期类型
+                            if (Date.class == fieldType) {
+                                field.set(entity, null);
+                            } else {
+                                field.set(entity, "");
+                            }
+                        } else {
+                            //把cell设置为String类型 ，防止读写类型报错
+                            c.setCellType(c.CELL_TYPE_STRING);
+                            //String类型
+                            if (String.class == fieldType) {
+                                field.set(entity, c.getStringCellValue());
+                            } else if (BigDecimal.class == fieldType) {
+                                String value = c.getStringCellValue().indexOf("%") != -1 ? c.getStringCellValue().replace("%", "") : c.getStringCellValue();
+                                field.set(entity, BigDecimal.valueOf(Double.valueOf(value)));
+                                //日期类型
+                            } else if (Date.class == fieldType) {
+                                field.set(entity, DateUtils.parseDate(c.toString()));
+                            } else if ((Integer.TYPE == fieldType) || (Integer.class == fieldType)) {
+                                field.set(entity, Integer.parseInt(c.getStringCellValue()));
+                            } else if ((Long.TYPE == fieldType) || (Long.class == fieldType)) {
+                                field.set(entity, Long.valueOf(c.getStringCellValue()));
+                            } else if ((Float.TYPE == fieldType) || (Float.class == fieldType)) {
+                                field.set(entity, Float.valueOf(c.getStringCellValue()));
+                            } else if ((Short.TYPE == fieldType) || (Short.class == fieldType)) {
+                                field.set(entity, Short.valueOf(c.getStringCellValue()));
+                            } else if ((Double.TYPE == fieldType) || (Double.class == fieldType)) {
+                                field.set(entity, Double.valueOf(c.getStringCellValue()));
+                            } else if (Character.TYPE == fieldType) {
+                                if ((c != null) && (c.getStringCellValue().length() > 0)) {
+                                    field.set(entity, Character.valueOf(c.getStringCellValue().charAt(0)));
+                                }
+                            }
+                        }
+
+                    }
+                    if (entity != null) {
+                        list.add(entity);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception("将excel表单数据源的数据导入到list异常!", e);
+        }
+        return list;
+    }
+
+    /**
+     * 这是一个通用的方法，利用了JAVA的反射机制，可以将放置在JAVA集合中并且符号一定条件的数据以EXCEL 的形式输出到指定IO设备上
+     *
+     * @param title   表格标题名
+     * @param headers 表格属性列名数组
+     * @param dataset 需要显示的数据集合,集合中一定要放置符合javabean风格的类的对象。此方法支持的
+     *                javabean属性的数据类型有基本数据类型及String,Date,byte[](图片数据)
+     * @param out     与输出设备关联的流对象，可以将EXCEL文档导出到本地文件或者网络中
+     * @param pattern 如果有时间数据，设定输出格式。默认为"yyy-MM-dd"
+     */
+    public void getListToExcel(HSSFWorkbook workbook, String title, String[] headers,
+                               Collection<T> dataset, OutputStream out) {
+        // 生成一个表格
+        HSSFSheet sheet = workbook.createSheet(title);
+        // 设置表格默认列宽度为15个字节
+//        sheet.setDefaultColumnWidth((short) 15);
+        // 生成一个样式
+        HSSFCellStyle style = workbook.createCellStyle();
+        // 设置这些样式
+        style.setFillForegroundColor(HSSFColor.SKY_BLUE.index);
+        style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        // 生成一个字体
+        HSSFFont font = workbook.createFont();
+        font.setColor(HSSFColor.VIOLET.index);
+        font.setFontHeightInPoints((short) 12);
+        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        // 把字体应用到当前的样式
+        style.setFont(font);
+        // 生成并设置另一个样式
+        HSSFCellStyle style2 = workbook.createCellStyle();
+        style2.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
+        style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        style2.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        style2.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        style2.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        style2.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        style2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        // 生成另一个字体
+        HSSFFont font2 = workbook.createFont();
+        font2.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+        // 把字体应用到当前的样式
+        style2.setFont(font2);
+
+        // 声明一个画图的顶级管理器
+        HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
+        // 定义注释的大小和位置,详见文档
+        HSSFComment comment = patriarch.createComment(new HSSFClientAnchor(0,
+                0, 0, 0, (short) 4, 2, (short) 6, 5));
+        // 设置注释内容
+//        comment.setString(new HSSFRichTextString("可以在POI中添加注释！"));
+        // 设置注释作者，当鼠标移动到单元格上是可以在状态栏中看到该内容.
+//        comment.setAuthor("leno");
+
+        // 产生表格标题行
+        HSSFRow row = sheet.createRow(0);
+        for (short i = 0; i < headers.length; i++) {
+            HSSFCell cell = row.createCell(i);
+            cell.setCellStyle(style);
+            HSSFRichTextString text = new HSSFRichTextString(headers[i]);
+            cell.setCellValue(text);
+        }
+
+        // 遍历集合数据，产生数据行
+        Iterator<T> it = dataset.iterator();
+        int index = 0;
+        while (it.hasNext()) {
+            index++;
+            row = sheet.createRow(index);
+            T t = (T) it.next();
+            // 利用反射，根据javabean属性的先后顺序，动态调用getXxx()方法得到属性值
+            Field[] fields = t.getClass().getDeclaredFields();
+            for (short i = 0; i < fields.length; i++) {
+                HSSFCell cell = row.createCell(i);
+//                cell.setCellStyle(style2);
+                Field field = fields[i];
+                String fieldName = field.getName();
+                String getMethodName = "get"
+                        + fieldName.substring(0, 1).toUpperCase()
+                        + fieldName.substring(1);
+                try {
+                    Class tCls = t.getClass();
+                    Method getMethod = tCls.getDeclaredMethod(getMethodName,
+                            new Class[]
+                                    {});
+                    Object value = getMethod.invoke(t, new Object[]
+                            {});
+                    // 判断值的类型后进行强制类型转换
+                    String textValue = null;
+                    if (value instanceof Boolean) {
+                        boolean bValue = (Boolean) value;
+                        textValue = "男";
+                        if (!bValue) {
+                            textValue = "女";
+                        }
+                    } else if (value instanceof Date) {
+                        Date date = (Date) value;
+                        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                        textValue = sdf.format(date);
+                    } else if (value instanceof byte[]) {
+                        // 有图片时，设置行高为60px;
+                        row.setHeightInPoints(60);
+                        // 设置图片所在列宽度为80px,注意这里单位的一个换算
+                        sheet.setColumnWidth(i, (short) (35.7 * 80));
+                        // sheet.autoSizeColumn(i);
+                        byte[] bsValue = (byte[]) value;
+                        HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0,
+                                1023, 255, (short) 6, index, (short) 6, index);
+                        anchor.setAnchorType(2);
+                        patriarch.createPicture(anchor, workbook.addPicture(
+                                bsValue, HSSFWorkbook.PICTURE_TYPE_JPEG));
+                    } else {
+                        // 其它数据类型都当作字符串简单处理
+//                        textValue = value.toString();
+                        textValue = null == value ? null : value.toString();
+                    }
+                    // 如果不是图片数据，就利用正则表达式判断textValue是否全部由数字组成
+                    if (textValue != null) {
+                        Pattern p = Pattern.compile("^//d+(//.//d+)?$");
+                        Matcher matcher = p.matcher(textValue);
+                        if (matcher.matches()) {
+                            // 是数字当作double处理
+                            cell.setCellValue(Double.parseDouble(textValue));
+                        } else {
+                            HSSFRichTextString richString = new HSSFRichTextString(
+                                    textValue);
+                            HSSFFont font3 = workbook.createFont();
+                            font3.setColor(HSSFColor.BLUE.index);
+                            richString.applyFont(font3);
+                            cell.setCellValue(richString);
+                        }
+                    }
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 检查传入的文件
+     *
+     * @param file
+     * @throws IOException
+     */
+    public static void checkFile(File file) throws IOException {
+        //判断文件是否存在
+        if (null == file) {
+            log.error("文件不存在！");
+            throw new FileNotFoundException("文件不存在！");
+        }
+        //获得文件名
+        String fileName = file.getName();
+        //判断文件是否是excel文件
+        if (!fileName.endsWith("xls") && !fileName.endsWith("xlsx")) {
+            log.error(fileName + "不是excel文件");
+            throw new IOException(fileName + "不是excel文件");
+        }
+    }
+
+    /**
+     * 得到excel工作簿
+     *
+     * @param file 传入的文件
+     * @return
+     */
+    public static Workbook getWorkBook(File file) {
+        //获得文件名
+        String fileName = file.getName();
+        //创建Workbook工作薄对象，表示整个excel
+        Workbook workbook = null;
+        try {
+            //获取excel文件的io流
+            InputStream is = new FileInputStream(file);
+            //根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
+            if (fileName.endsWith("xls")) {
+                //2003
+                workbook = new HSSFWorkbook(is);
+            } else if (fileName.endsWith("xlsx")) {
+                //2007
+                workbook = new XSSFWorkbook(is);
+            }
+        } catch (IOException e) {
+            log.info(e.getMessage());
+        }
+        return workbook;
+    }
+
+
+//    //检查传入的文件 springmvc 使用
+//    public static void checkFile(MultipartFile file) throws IOException {
+//        //判断文件是否存在
+//        if(null == file){
+//            log.error("文件不存在！");
+//            throw new FileNotFoundException("文件不存在！");
+//        }
+//        //获得文件名
+//        String fileName = file.getOriginalFilename();
+//        //判断文件是否是excel文件
+//        if(!fileName.endsWith("xls") && !fileName.endsWith("xlsx")){
+//            log.error(fileName + "不是excel文件");
+//            throw new IOException(fileName + "不是excel文件");
+//        }
+//    }
+
+    //springmvc使用
+//    public static Workbook getWorkBook(MultipartFile file) {
+//        //获得文件名
+//        String fileName = file.getOriginalFilename();
+//        //创建Workbook工作薄对象，表示整个excel
+//        Workbook workbook = null;
+//        try {
+//            //获取excel文件的io流
+//            InputStream is = file.getInputStream();
+//            //根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
+//            if(fileName.endsWith("xls")){
+//                //2003
+//                workbook = new HSSFWorkbook(is);
+//            }else if(fileName.endsWith("xlsx")){
+//                //2007
+//                workbook = new XSSFWorkbook(is);
+//            }
+//        } catch (IOException e) {
+//            log.info(e.getMessage());
+//        }
+//        return workbook;
+//    }
+
+}

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.correct.dao.IncontrollableControlWorkDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.correct.model.IncontrollableControlWorkEntity" id="incontrollableControlWorkMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="nameOfPersonnel" column="name_of_personnel"/>
+        <result property="controlCategory" column="control_category"/>
+        <result property="incontrollableTime" column="incontrollable_time"/>
+        <result property="incontrollableReasons" column="incontrollable_reasons"/>
+        <result property="presentation" column="presentation"/>
+        <result property="trajectoryTracking" column="trajectory_tracking"/>
+        <result property="behaviorCorrection" column="behavior_correction"/>
+        <result property="percussionTreatment" column="percussion_treatment"/>
+        <result property="difficultiesHelp" column="difficulties_help"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `name_of_personnel`,  `control_category`,  `incontrollable_time`,  `incontrollable_reasons`,  `presentation`,  `trajectory_tracking`,  `behavior_correction`,  `percussion_treatment`,  `difficulties_help`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="nameOfPersonnel != null">AND `name_of_personnel` = #{nameOfPersonnel}</if>
+        <if test="controlCategory != null">AND `control_category` = #{controlCategory}</if>
+        <if test="incontrollableTime != null">AND `incontrollable_time` = #{incontrollableTime}</if>
+        <if test="incontrollableReasons != null">AND `incontrollable_reasons` = #{incontrollableReasons}</if>
+        <if test="presentation != null">AND `presentation` = #{presentation}</if>
+        <if test="trajectoryTracking != null">AND `trajectory_tracking` = #{trajectoryTracking}</if>
+        <if test="behaviorCorrection != null">AND `behavior_correction` = #{behaviorCorrection}</if>
+        <if test="percussionTreatment != null">AND `percussion_treatment` = #{percussionTreatment}</if>
+        <if test="difficultiesHelp != null">AND `difficulties_help` = #{difficultiesHelp}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.correct.model.IncontrollableControlWorkEntity"
+            resultMap="incontrollableControlWorkMap">
+		select * from incontrollable_control_work where id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="incontrollableControlWorkMap">
+        select * from incontrollable_control_work
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from incontrollable_control_work
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.correct.model.IncontrollableControlWorkEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into incontrollable_control_work
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `name_of_personnel`,
+        `control_category`,
+        `incontrollable_time`,
+        `incontrollable_reasons`,
+        `presentation`,
+        `trajectory_tracking`,
+        `behavior_correction`,
+        `percussion_treatment`,
+        `difficulties_help`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{nameOfPersonnel},
+        #{controlCategory},
+        #{incontrollableTime},
+        #{incontrollableReasons},
+        #{presentation},
+        #{trajectoryTracking},
+        #{behaviorCorrection},
+        #{percussionTreatment},
+        #{difficultiesHelp},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.correct.model.IncontrollableControlWorkEntity">
+        update incontrollable_control_work
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="nameOfPersonnel != null">`name_of_personnel` = #{nameOfPersonnel},</if>
+            <if test="controlCategory != null">`control_category` = #{controlCategory},</if>
+            <if test="incontrollableTime != null">`incontrollable_time` = #{incontrollableTime},</if>
+            <if test="incontrollableReasons != null">`incontrollable_reasons` = #{incontrollableReasons},</if>
+            <if test="presentation != null">`presentation` = #{presentation},</if>
+            <if test="trajectoryTracking != null">`trajectory_tracking` = #{trajectoryTracking},</if>
+            <if test="behaviorCorrection != null">`behavior_correction` = #{behaviorCorrection},</if>
+            <if test="percussionTreatment != null">`percussion_treatment` = #{percussionTreatment},</if>
+            <if test="difficultiesHelp != null">`difficulties_help` = #{difficultiesHelp},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from incontrollable_control_work where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from incontrollable_control_work where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

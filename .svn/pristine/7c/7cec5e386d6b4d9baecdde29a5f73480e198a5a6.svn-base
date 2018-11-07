@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>户籍登记表</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="${rc.contextPath}/static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="${rc.contextPath}/static/css/font-awesome.min.css">
+	<link rel="stylesheet" href="${rc.contextPath}/static/plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link rel="stylesheet" href="${rc.contextPath}/static/plugins/ztree/css/metroStyle/metroStyle.css">
+	<link rel="stylesheet" href="${rc.contextPath}/static/css/main.css">
+	<script src="${rc.contextPath}/static/libs/jquery.min.js"></script>
+	<script src="${rc.contextPath}/static/plugins/layer/layer.js"></script>
+	<script src="${rc.contextPath}/static/libs/bootstrap.min.js"></script>
+	<script src="${rc.contextPath}/static/libs/vue.min.js"></script>
+	<script src="${rc.contextPath}/static/plugins/jqgrid/grid.locale-cn.js"></script>
+	<script src="${rc.contextPath}/static/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+	<script src="${rc.contextPath}/static/plugins/ztree/jquery.ztree.all.min.js"></script>
+	<script src="${rc.contextPath}/static/js/common.js"></script>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+
+			<a v-if="hasPermission('census:censusregister:update')" class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;审核或查看</a>
+
+		</div>
+		<table id="jqGrid"></table>
+		<div id="jqGridPager"></div>
+	</div>
+
+	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-10 control-label"></div>
+				<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-2 control-label">基本信息</div>
+			</div>
+			<hr style="height:2px;border:none;border-top:2px solid #555555;width: 60% ;text-align: left" />
+			<div class="form-group">
+				<div class="col-sm-4 control-label">申请人姓名</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.name}}</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">申请人出生日期</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.birthDate}}</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">申请人身份证号</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.idNumber}}</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">申请人现在户口所在地</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.currentCensusRegisterPlace}}</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">申请人与注销人关系</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.relation}}</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">注销人姓名</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.cancelledPersonName}}</div>
+
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">注销人出生时间</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.cancelledPersonBirthDate}}</div>
+
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">注销人身份证号</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.cancelledPersonIdNumber}}</div>
+
+			</div>
+			<div class="form-group">
+				<div class="col-sm-4 control-label">注销人死亡原因</div>
+				<div class="col-sm-4 form-control-static">{{censusRegister.cancelledPersonCauseDeath}}</div>
+
+			</div>
+
+
+			<div class="form-group">
+				<div class="col-sm-2 control-label">备审材料</div>
+			</div>
+			<hr style="height:2px;border:none;border-top:2px solid #555555;width: 60% ;text-align: left" />
+
+			<div class="form-group">
+				<div class="col-sm-3 control-label"></div>
+				<div class="col-sm-4 form-control-static">1.医院的死亡医学证明（复印件/扫描件）</div>
+			</div>
+			<div v-for="myBean in censusRegister.deathCertificateArray">
+				<div class="form-group">
+					<div class="col-sm-3 control-label"></div>
+					<div class="col-sm-4 form-control-static"><img :src="'${rc.contextPath}'+myBean" class="img-rounded"></div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-3 control-label"></div>
+				<div class="col-sm-4 form-control-static">2.户口本原件（复印件/扫描件）</div>
+			</div>
+			<div v-for="myBean in censusRegister.censusRegisterArray">
+				<div class="form-group">
+					<div class="col-sm-3 control-label"></div>
+					<div class="col-sm-4 form-control-static"><img :src="'${rc.contextPath}'+myBean" class="img-rounded"></div>
+				</div>
+			</div>
+
+			<div v-show="censusRegister.approvalStatus!=0">
+				<div class="form-group">
+					<div class="col-sm-2 control-label">审批信息</div>
+				</div>
+				<hr style="height:2px;border:none;border-top:2px solid #555555;width: 60% ;text-align: left" />
+				<div class="form-group">
+					<div class="col-sm-4 control-label">所属派出所</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.policeStation}}</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-sm-4 control-label">所属警务室</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.policeOffice}}</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-sm-4 control-label">审批人</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.policeName}}</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-4 control-label">警号</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.policeNumber}}</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-4 control-label">申请时间</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.submitTime}}</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-4 control-label">审批时间</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.dateApprovalTime}}</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-4 control-label">审批状态</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.approvalStatus==1?'驳回':'审核通过'}}</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-4 control-label">审批意见</div>
+					<div class="col-sm-4 form-control-static">{{censusRegister.approvalSuggestion}}</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-4 control-label"></div>
+				<div v-show="censusRegister.approvalStatus==0">
+					<input type="button" class="btn btn-primary" @click="pass" value="通过"/>
+					&nbsp;&nbsp;
+					<input type="button" class="btn btn-primary" @click="reject" value="驳回"/>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="${rc.contextPath}/static/js/modules/census/logout.js"></script>
+</body>
+</html>

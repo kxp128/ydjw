@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.ehootu.ydjw.modules</groupId>
+    <artifactId>ydjw-modules</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.ehootu.ydjw.notice</groupId>
+  <artifactId>ydjw-notice</artifactId>
+  <version>${module.version}</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.ehootu.ydjw.common</groupId>
+      <artifactId>ydjw-common</artifactId>
+      <version>${module.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>ydjw-notice</finalName>
+  </build>
+</project>

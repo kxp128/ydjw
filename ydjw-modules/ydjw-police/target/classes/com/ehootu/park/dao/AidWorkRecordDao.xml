@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.AidWorkRecordDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.AidWorkRecordEntity" id="aidWorkRecordMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="helpingTime" column="helping_time"/>
+        <result property="helpingLocation" column="helping_location"/>
+        <result property="helpingPeople" column="helping_people"/>
+        <result property="helpingObject" column="helping_object"/>
+        <result property="helpingMeasures" column="helping_measures"/>
+        <result property="helpingResults" column="helping_results"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="date" column="date"/>
+        <result property="publicId" column="public_id"/>
+        <result property="taskId" column="task_id"/>
+        <collection property="publicInformation" ofType="com.ehootu.park.model.PublicInformationEntity">
+            <result property="id" column="id"/>
+            <result property="enterpriseAddress" column="enterprise_address"/>
+            <result property="enterpriseName" column="enterprise_name"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="queryObject" resultMap="aidWorkRecordMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from aid_work_record enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.id = #{value}
+	</select>
+
+    <select id="select" resultMap="aidWorkRecordMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from aid_work_record enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.police_id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="aidWorkRecordMap">
+        select enterprise.*,public.enterprise_address,public.enterprise_name from aid_work_record enterprise
+        left join public_information public on public.id=enterprise.public_id
+        where enterprise.police_id = #{policeId}
+        order by enterprise.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.AidWorkRecordEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into aid_work_record
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `helping_time`,
+        `helping_location`,
+        `helping_people`,
+        `helping_object`,
+        `helping_measures`,
+        `helping_results`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `police_id`,
+        `date`,
+        `public_id`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{helpingTime},
+        #{helpingLocation},
+        #{helpingPeople},
+        #{helpingObject},
+        #{helpingMeasures},
+        #{helpingResults},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{date},
+        #{publicId},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.AidWorkRecordEntity">
+        update aid_work_record
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="helpingTime != null">`helping_time` = #{helpingTime},</if>
+            <if test="helpingLocation != null">`helping_location` = #{helpingLocation},</if>
+            <if test="helpingPeople != null">`helping_people` = #{helpingPeople},</if>
+            <if test="helpingObject != null">`helping_object` = #{helpingObject},</if>
+            <if test="helpingMeasures != null">`helping_measures` = #{helpingMeasures},</if>
+            <if test="helpingResults != null">`helping_results` = #{helpingResults},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="taskId != null">`task_id` = #{taskId},</if>
+            <if test="policeId != null">`police_id` = #{policeId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from aid_work_record where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from aid_work_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

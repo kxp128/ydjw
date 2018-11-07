@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.flow.dao.SixPartyTalksDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.flow.model.SixPartyTalksEntity" id="sixPartyTalksMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="meetingTime" column="meeting_time"/>
+        <result property="meetingPersonnel" column="meeting_personnel"/>
+        <result property="meetingPlace" column="meeting_place"/>
+        <result property="meetingContent" column="meeting_content"/>
+        <result property="meetingResults" column="meeting_results"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `meeting_time`,  `meeting_personnel`,  `meeting_place`,  `meeting_content`,  `meeting_results`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="meetingTime != null">AND `meeting_time` = #{meetingTime}</if>
+        <if test="meetingPersonnel != null">AND `meeting_personnel` = #{meetingPersonnel}</if>
+        <if test="meetingPlace != null">AND `meeting_place` = #{meetingPlace}</if>
+        <if test="meetingContent != null">AND `meeting_content` = #{meetingContent}</if>
+        <if test="meetingResults != null">AND `meeting_results` = #{meetingResults}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.flow.model.SixPartyTalksEntity" resultMap="sixPartyTalksMap">
+		select * from six_party_talks where id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="sixPartyTalksMap">
+        select * from six_party_talks
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from six_party_talks
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.flow.model.SixPartyTalksEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into six_party_talks
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `meeting_time`,
+        `meeting_personnel`,
+        `meeting_place`,
+        `meeting_content`,
+        `meeting_results`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{meetingTime},
+        #{meetingPersonnel},
+        #{meetingPlace},
+        #{meetingContent},
+        #{meetingResults},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.flow.model.SixPartyTalksEntity">
+        update six_party_talks
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="meetingTime != null">`meeting_time` = #{meetingTime},</if>
+            <if test="meetingPersonnel != null">`meeting_personnel` = #{meetingPersonnel},</if>
+            <if test="meetingPlace != null">`meeting_place` = #{meetingPlace},</if>
+            <if test="meetingContent != null">`meeting_content` = #{meetingContent},</if>
+            <if test="meetingResults != null">`meeting_results` = #{meetingResults},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from six_party_talks where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from six_party_talks where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

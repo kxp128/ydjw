@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.BusinessStabilityDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.BusinessStabilityEntity" id="businessStabilityMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="collectionTime" column="collection_time"/>
+        <result property="collector" column="collector"/>
+        <result property="collectObjects" column="collect_objects"/>
+        <result property="managementStatus" column="management_status"/>
+        <result property="assetStatus" column="asset_status"/>
+        <result property="payrollStatus" column="payroll_status"/>
+        <result property="externalFinancingSituation" column="external_financing_situation"/>
+        <result property="petitionDetail" column="petition_detail"/>
+        <result property="policeId" column="police_id"/>
+        <result property="date" column="date"/>
+        <result property="publicId" column="public_id"/>
+        <result property="taskId" column="task_id"/>
+        <collection property="publicInformation" ofType="com.ehootu.park.model.PublicInformationEntity">
+            <result property="id" column="id"/>
+            <result property="enterpriseAddress" column="enterprise_address"/>
+            <result property="enterpriseName" column="enterprise_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryObject" resultMap="businessStabilityMap">
+		select * from business_stability
+			where id = #{value}
+	</select>
+
+    <select id="select" resultMap="businessStabilityMap">
+		select * from business_stability
+			where police_id = #{policeId} or find_in_set(#{policeId},collector)
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="businessStabilityMap">
+        select * from business_stability
+        where police_id = #{policeId} or find_in_set(#{policeId},collector)
+        order by id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.BusinessStabilityEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into business_stability
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `collection_time`,
+        `collector`,
+        `collect_objects`,
+        `management_status`,
+        `asset_status`,
+        `payroll_status`,
+        `external_financing_situation`,
+        `petition_detail`,
+        `police_id`,
+        `date`,
+        `public_id`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{collectionTime},
+        #{collector},
+        #{collectObjects},
+        #{managementStatus},
+        #{assetStatus},
+        #{payrollStatus},
+        #{externalFinancingSituation},
+        #{petitionDetail},
+        #{policeId},
+        #{date},
+        #{publicId},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.BusinessStabilityEntity">
+        update business_stability
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="collectionTime != null">`collection_time` = #{collectionTime},</if>
+            <if test="collector != null">`collector` = #{collector},</if>
+            <if test="collectObjects != null">`collect_objects` = #{collectObjects},</if>
+            <if test="managementStatus != null">`management_status` = #{managementStatus},</if>
+            <if test="assetStatus != null">`asset_status` = #{assetStatus},</if>
+            <if test="payrollStatus != null">`payroll_status` = #{payrollStatus},</if>
+            <if test="externalFinancingSituation != null">`external_financing_situation` =
+                #{externalFinancingSituation},
+            </if>
+            <if test="petitionDetail != null">`petition_detail` = #{petitionDetail},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from business_stability where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from business_stability where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

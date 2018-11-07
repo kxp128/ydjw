@@ -1,0 +1,6 @@
+## VelocityConfig
+input.encoding=utf-8
+output.encoding=utf-8
+runtime.log.logsystem.class = org.apache.velocity.runtime.log.Log4JLogChute
+userdirective=com.ehootu.core.feature.velocity.BlockDirective,com.ehootu.core.feature.velocity.OverrideDirective,com.ehootu.core.feature.velocity.ExtendsDirective
+#file.resource.loader.cache = true

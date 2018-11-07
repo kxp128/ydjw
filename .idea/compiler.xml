@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ydjw-census" />
+        <module name="ydjw-common" />
+        <module name="ydjw-flow" />
+        <module name="ydjw-notice" />
+        <module name="ydjw-police" />
+        <module name="ydjw-task" />
+        <module name="ydjw-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ydjw" target="1.7" />
+      <module name="ydjw-census" target="1.7" />
+      <module name="ydjw-common" target="1.7" />
+      <module name="ydjw-flow" target="1.7" />
+      <module name="ydjw-modules" target="1.7" />
+      <module name="ydjw-notice" target="1.7" />
+      <module name="ydjw-police" target="1.7" />
+      <module name="ydjw-task" target="1.7" />
+      <module name="ydjw-web" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

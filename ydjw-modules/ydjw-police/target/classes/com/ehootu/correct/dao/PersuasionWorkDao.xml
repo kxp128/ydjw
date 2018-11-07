@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.correct.dao.PersuasionWorkDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.correct.model.PersuasionWorkEntity" id="persuasionWorkMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="workingContent" column="working_content"/>
+        <result property="workingHours" column="working_hours"/>
+        <result property="workingPlace" column="working_place"/>
+        <result property="personnel" column="personnel"/>
+        <result property="workingObject" column="working_object"/>
+        <result property="classifiedManagement" column="classified_management"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+        <association property="sysDictionary" resultMap="com.ehootu.dictionary.dao.SysDictionaryDao.sysDictionaryMap"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+         `id`,  `police_station`,  `police_office`,  `working_content`,  `working_hours`,  `working_place`,  `personnel`,  `working_object`,  `classified_management`,  `four_patrol_platform`,  `flash_memory_platform`,  `working_picture`,  `police_id`,  `create_time`,  `task_id`     </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="workingContent != null">AND `working_content` = #{workingContent}</if>
+        <if test="workingHours != null">AND `working_hours` = #{workingHours}</if>
+        <if test="workingPlace != null">AND `working_place` = #{workingPlace}</if>
+        <if test="personnel != null">AND `personnel` = #{personnel}</if>
+        <if test="workingObject != null">AND `working_object` = #{workingObject}</if>
+        <if test="classifiedManagement != null">AND `classified_management` = #{classifiedManagement}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.correct.model.PersuasionWorkEntity"
+            resultMap="persuasionWorkMap">
+        select pw.*, dict.name from persuasion_work pw
+        LEFT JOIN sys_dictionary dict
+        ON pw.classified_management = dict.value AND dict.type = "xlxxlsd_fjgl"
+        WHERE pw.id = #{VALUE}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="persuasionWorkMap">
+        select pw.*, dict.name from persuasion_work pw
+        LEFT JOIN sys_dictionary dict
+        ON pw.classified_management = dict.value AND dict.type = "xlxxlsd_fjgl"
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from persuasion_work
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.correct.model.PersuasionWorkEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into persuasion_work
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `working_content`,
+        `working_hours`,
+        `working_place`,
+        `personnel`,
+        `working_object`,
+        `classified_management`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{workingContent},
+        #{workingHours},
+        #{workingPlace},
+        #{personnel},
+        #{workingObject},
+        #{classifiedManagement},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.correct.model.PersuasionWorkEntity">
+        update persuasion_work
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="workingContent != null">`working_content` = #{workingContent},</if>
+            <if test="workingHours != null">`working_hours` = #{workingHours},</if>
+            <if test="workingPlace != null">`working_place` = #{workingPlace},</if>
+            <if test="personnel != null">`personnel` = #{personnel},</if>
+            <if test="workingObject != null">`working_object` = #{workingObject},</if>
+            <if test="classifiedManagement != null">`classified_management` = #{classifiedManagement},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from persuasion_work where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from persuasion_work where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.SecurityInspectionDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.SecurityInspectionEntity" id="securityInspectionMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="inspectors" column="inspectors"/>
+        <result property="checkContent" column="check_content"/>
+        <result property="rectificationAndDistribution" column="rectification_and_distribution"/>
+        <result property="superviseAndReform" column="supervise_and_reform"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemotyPlatform" column="flash_memoty_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="approval" column="approval"/>
+        <result property="storages" column="storages"/>
+        <result property="use" column="use"/>
+        <result property="standingBook" column="standing_book"/>
+        <result property="policeId" column="police_id"/>
+        <result property="date" column="date"/>
+        <result property="publicId" column="public_id"/>
+        <result property="taskId" column="task_id"/>
+        <collection property="publicInformation" ofType="com.ehootu.park.model.PublicInformationEntity">
+            <result property="id" column="id"/>
+            <result property="enterpriseAddress" column="enterprise_address"/>
+            <result property="enterpriseName" column="enterprise_name"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="queryObject" resultMap="securityInspectionMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from security_inspection enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.id = #{value}
+	</select>
+    <select id="select" resultMap="securityInspectionMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from security_inspection enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.police_id = #{value} or find_in_set(#{value},enterprise.inspectors)
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="securityInspectionMap">
+        select enterprise.*,public.enterprise_address,public.enterprise_name from security_inspection enterprise
+        left join public_information public on public.id=enterprise.public_id
+        where enterprise.police_id = #{policeId} or find_in_set(#{policeId},enterprise.inspectors)
+        order by enterprise.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.SecurityInspectionEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into security_inspection
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `inspectors`,
+        `check_content`,
+        `approval`,
+        `storages`,
+        `use`,
+        `standing_book`,
+        `rectification_and_distribution`,
+        `supervise_and_reform`,
+        `four_patrol_platform`,
+        `flash_memoty_platform`,
+        `working_picture`,
+        `police_id`,
+        `date`,
+        `task_id`,
+        `public_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{inspectors},
+        #{checkContent},
+        #{approval},
+        #{storages},
+        #{use},
+        #{standingBook},
+        #{rectificationAndDistribution},
+        #{superviseAndReform},
+        #{fourPatrolPlatform},
+        #{flashMemotyPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{date},
+        #{taskId},
+        #{publicId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.SecurityInspectionEntity">
+        update security_inspection
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="inspectionEnterprise != null">`inspection_enterprise` = #{inspectionEnterprise},</if>
+            <if test="inspectionTime != null">`inspection_time` = #{inspectionTime},</if>
+            <if test="inspectors != null">`inspectors` = #{inspectors},</if>
+            <if test="inspectionPlace != null">`inspection_place` = #{inspectionPlace},</if>
+            <if test="checkContent != null">`check_content` = #{checkContent},</if>
+            <if test="rectificationAndDistribution != null">`rectification_and_distribution` =
+                #{rectificationAndDistribution},
+            </if>
+            <if test="superviseAndReform != null">`supervise_and_reform` = #{superviseAndReform},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemotyPlatform != null">`flash_memoty_platform` = #{flashMemotyPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="taskId != null">`task_id` = #{taskId},</if>
+            <if test="policeId != null">`police_id` = #{policeId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from security_inspection where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from security_inspection where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.PublicInformationDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.PublicInformationEntity" id="publicInformationMap">
+        <result property="id" column="id"/>
+        <result property="diZhiBianMa" column="diZhiBianMa"/>
+        <result property="enterpriseAddress" column="enterprise_address"/>
+        <result property="enterpriseName" column="enterprise_name"/>
+        <result property="diZhiJingDu" column="DdiZhiJingDu"/>
+        <result property="diZhiWeiDu" column="diZhiWeiDu"/>
+    </resultMap>
+
+    <select id="selectOne" resultMap="publicInformationMap">
+		select diZhiBianMa,enterprise_address,enterprise_name,diZhiJingDu,diZhiWeiDu from public_information 
+			where `diZhiBianMa` like concat(#{value},'%')
+			and sign = 1
+	</select>
+    <select id="select" resultMap="publicInformationMap">
+		select * from public_information where diZhiBianMa= #{value} and sign = 1
+	</select>
+    <select id="selectAddress" resultMap="publicInformationMap">
+		select diZhiBianMa,enterprise_address,enterprise_name,diZhiJingDu,diZhiWeiDu from public_information 
+			where `enterprise_address` like concat('%',#{value},'%') 
+			and sign = 1
+	</select>
+    <insert id="save" parameterType="com.ehootu.park.model.PublicInformationEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into public_information
+        (
+        `id`,
+        `diZhiBianMa`,
+        `enterprise_address`,
+        `enterprise_name`,
+        `diZhiJingDu`,
+        `diZhiWeiDu`,
+        `date`,
+        `sign`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{diZhiBianMa},
+        #{enterpriseAddress},
+        #{enterpriseName},
+        #{diZhiJingDu},
+        #{diZhiWeiDu},
+        #{date},
+        #{sign}
+
+        )
+    </insert>
+    <update id="update" parameterType="com.ehootu.park.model.PublicInformationEntity">
+        update public_information
+        <set>
+            <if test="sign != null">`sign` = #{sign},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateSign" parameterType="com.ehootu.park.model.PublicInformationEntity">
+        update public_information
+        <set>
+            <if test="sign != null">`sign` = #{sign},</if>
+        </set>
+        where diZhiBianMa = #{diZhiBianMa}
+    </update>
+
+</mapper>

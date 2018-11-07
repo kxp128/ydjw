@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.rural.dao.PatrolRecordDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.rural.model.PatrolRecordEntity" id="patrolRecordMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="policeWorkstation" column="police_workstation"/>
+        <result property="patrolTime" column="patrol_time"/>
+        <result property="patrolPersonnel" column="patrol_personnel"/>
+        <result property="patrolRoute" column="patrol_route"/>
+        <result property="interrogationStaff" column="interrogation_staff"/>
+        <result property="dundianGuardCard" column="dundian_guard_card"/>
+        <result property="captureTheCurrent" column="capture_the_current"/>
+        <result property="processingResults" column="processing_results"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="whetherToEnter" column="whether_to_enter"/>
+        <result property="remarks" column="remarks"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="taskId" column="task_id"/>
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="baseColumn">
+        `id`,  `police_station`,  `police_office`,  `police_workstation`,  `patrol_time`,  `patrol_personnel`,
+        `patrol_route`, `interrogation_staff`,  `dundian_guard_card`,  `capture_the_current`,  `processing_results`,
+        `four_patrol_platform`,  `flash_memory_platform`,  `whether_to_enter`,  `remarks`,  `working_picture`,
+        `police_id`,  `create_time`,  `task_id`
+    </sql>
+
+    <!-- 条件判断 -->
+    <sql id="otherCondition">
+        <if test="id != null">AND `id` = #{id}</if>
+        <if test="policeStation != null">AND `police_station` = #{policeStation}</if>
+        <if test="policeOffice != null">AND `police_office` = #{policeOffice}</if>
+        <if test="policeWorkstation != null">AND `police_workstation` = #{policeWorkstation}</if>
+        <if test="patrolTime != null">AND `patrol_time` = #{patrolTime}</if>
+        <if test="patrolPersonnel != null">AND `patrol_personnel` = #{patrolPersonnel}</if>
+        <if test="patrolRoute != null">AND `patrol_route` = #{patrolRoute}</if>
+        <if test="interrogationStaff != null">AND `interrogation_staff` = #{interrogationStaff}</if>
+        <if test="dundianGuardCard != null">AND `dundian_guard_card` = #{dundianGuardCard}</if>
+        <if test="captureTheCurrent != null">AND `capture_the_current` = #{captureTheCurrent}</if>
+        <if test="processingResults != null">AND `processing_results` = #{processingResults}</if>
+        <if test="fourPatrolPlatform != null">AND `four_patrol_platform` = #{fourPatrolPlatform}</if>
+        <if test="flashMemoryPlatform != null">AND `flash_memory_platform` = #{flashMemoryPlatform}</if>
+        <if test="whetherToEnter != null">AND `whether_to_enter` = #{whetherToEnter}</if>
+        <if test="remarks != null">AND `remarks` = #{remarks}</if>
+        <if test="workingPicture != null">AND `working_picture` = #{workingPicture}</if>
+        <if test="policeId != null">AND `police_id` = #{policeId}</if>
+        <if test="createTime != null">AND `create_time` = #{createTime}</if>
+        <if test="taskId != null">AND `task_id` = #{taskId}</if>
+    </sql>
+
+    <select id="queryObject" parameterType="com.ehootu.rural.model.PatrolRecordEntity" resultMap="patrolRecordMap">
+		select * from patrol_record where id = #{value}
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="patrolRecordMap">
+        select * from patrol_record
+        <where>
+            <include refid="otherCondition"/>
+        </where>
+        order by id DESC
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="int">
+		select count(*) from patrol_record
+	</select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.rural.model.PatrolRecordEntity" useGeneratedKeys="true"
+            keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into patrol_record
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `police_workstation`,
+        `patrol_time`,
+        `patrol_personnel`,
+        `patrol_route`,
+        `interrogation_staff`,
+        `dundian_guard_card`,
+        `capture_the_current`,
+        `processing_results`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `whether_to_enter`,
+        `remarks`,
+        `working_picture`,
+        `police_id`,
+        `create_time`,
+        `task_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{policeWorkstation},
+        #{patrolTime},
+        #{patrolPersonnel},
+        #{patrolRoute},
+        #{interrogationStaff},
+        #{dundianGuardCard},
+        #{captureTheCurrent},
+        #{processingResults},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{whetherToEnter},
+        #{remarks},
+        #{workingPicture},
+        #{policeId},
+        #{createTime},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.rural.model.PatrolRecordEntity">
+        update patrol_record
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="policeWorkstation != null">`police_workstation` = #{policeWorkstation},</if>
+            <if test="patrolTime != null">`patrol_time` = #{patrolTime},</if>
+            <if test="patrolPersonnel != null">`patrol_personnel` = #{patrolPersonnel},</if>
+            <if test="patrolRoute != null">`patrol_route` = #{patrolRoute},</if>
+            <if test="interrogationStaff != null">`interrogation_staff` = #{interrogationStaff},</if>
+            <if test="dundianGuardCard != null">`dundian_guard_card` = #{dundianGuardCard},</if>
+            <if test="captureTheCurrent != null">`capture_the_current` = #{captureTheCurrent},</if>
+            <if test="processingResults != null">`processing_results` = #{processingResults},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="whetherToEnter != null">`whether_to_enter` = #{whetherToEnter},</if>
+            <if test="remarks != null">`remarks` = #{remarks},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId},</if>
+            <if test="createTime != null">`create_time` = #{createTime},</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from patrol_record where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from patrol_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

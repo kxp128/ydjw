@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.census.dao.PoisMapper">
+  <resultMap id="BaseResultMap" type="com.ehootu.census.model.Pois">
+    <id column="poi_id" jdbcType="INTEGER" property="poiId" />
+    <result column="scene" jdbcType="INTEGER" property="scene" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="region_id" jdbcType="VARCHAR" property="regionId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="cover" jdbcType="VARCHAR" property="cover" />
+    <result column="voice" jdbcType="VARCHAR" property="voice" />
+    <result column="voice_duration" jdbcType="SMALLINT" property="voiceDuration" />
+    <result column="category" jdbcType="TINYINT" property="category" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="score" jdbcType="DECIMAL" property="score" />
+    <result column="business_id" jdbcType="INTEGER" property="businessId" />
+    <result column="category_level1" jdbcType="INTEGER" property="categoryLevel1" />
+    <result column="category_level2" jdbcType="INTEGER" property="categoryLevel2" />
+    <result column="custom_category" jdbcType="VARCHAR" property="customCategory" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="is_enable" jdbcType="TINYINT" property="isEnable" />
+    <result column="views" jdbcType="INTEGER" property="views" />
+    <result column="parking_capacity" jdbcType="SMALLINT" property="parkingCapacity" />
+    <result column="browse_count" jdbcType="INTEGER" property="browseCount" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="recommend_score" jdbcType="DECIMAL" property="recommendScore" />
+    <result column="custom_recommend_score" jdbcType="INTEGER" property="customRecommendScore" />
+    <result column="custom_tags" jdbcType="VARCHAR" property="customTags" />
+    <result column="comment_keywords" jdbcType="VARCHAR" property="commentKeywords" />
+    <result column="koubei_headline" jdbcType="VARCHAR" property="koubeiHeadline" />
+    <result column="created" jdbcType="INTEGER" property="created" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ehootu.census.model.PoisWithBLOBs">
+    <result column="description" jdbcType="LONGVARCHAR" property="description" />
+    <result column="spriders" jdbcType="LONGVARCHAR" property="spriders" />
+    <result column="images" jdbcType="LONGVARCHAR" property="images" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    poi_id, scene, name, user_id, tel, region_id, address, longitude, latitude, cover, 
+    voice, voice_duration, category, path, status, score, business_id, category_level1, 
+    category_level2, custom_category, level, is_enable, views, parking_capacity, browse_count, 
+    update_user, recommend_score, custom_recommend_score, custom_tags, comment_keywords, 
+    koubei_headline, created
+  </sql>
+  <sql id="Blob_Column_List">
+    description, spriders, images
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.ehootu.census.model.PoisExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pois
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.ehootu.census.model.PoisExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pois
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pois
+    where poi_id = #{poiId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pois
+    where poi_id = #{poiId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ehootu.census.model.PoisExample">
+    delete from pois
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ehootu.census.model.PoisWithBLOBs">
+    insert into pois (poi_id, scene, name, 
+      user_id, tel, region_id, 
+      address, longitude, latitude, 
+      cover, voice, voice_duration, 
+      category, path, status, 
+      score, business_id, category_level1, 
+      category_level2, custom_category, level, 
+      is_enable, views, parking_capacity, 
+      browse_count, update_user, recommend_score, 
+      custom_recommend_score, custom_tags, comment_keywords, 
+      koubei_headline, created, description, 
+      spriders, images)
+    values (#{poiId,jdbcType=INTEGER}, #{scene,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{tel,jdbcType=VARCHAR}, #{regionId,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, 
+      #{cover,jdbcType=VARCHAR}, #{voice,jdbcType=VARCHAR}, #{voiceDuration,jdbcType=SMALLINT}, 
+      #{category,jdbcType=TINYINT}, #{path,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{score,jdbcType=DECIMAL}, #{businessId,jdbcType=INTEGER}, #{categoryLevel1,jdbcType=INTEGER}, 
+      #{categoryLevel2,jdbcType=INTEGER}, #{customCategory,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, 
+      #{isEnable,jdbcType=TINYINT}, #{views,jdbcType=INTEGER}, #{parkingCapacity,jdbcType=SMALLINT}, 
+      #{browseCount,jdbcType=INTEGER}, #{updateUser,jdbcType=INTEGER}, #{recommendScore,jdbcType=DECIMAL}, 
+      #{customRecommendScore,jdbcType=INTEGER}, #{customTags,jdbcType=VARCHAR}, #{commentKeywords,jdbcType=VARCHAR}, 
+      #{koubeiHeadline,jdbcType=VARCHAR}, #{created,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR}, 
+      #{spriders,jdbcType=LONGVARCHAR}, #{images,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ehootu.census.model.PoisWithBLOBs">
+    insert into pois
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="poiId != null">
+        poi_id,
+      </if>
+      <if test="scene != null">
+        scene,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="tel != null">
+        tel,
+      </if>
+      <if test="regionId != null">
+        region_id,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="cover != null">
+        cover,
+      </if>
+      <if test="voice != null">
+        voice,
+      </if>
+      <if test="voiceDuration != null">
+        voice_duration,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="businessId != null">
+        business_id,
+      </if>
+      <if test="categoryLevel1 != null">
+        category_level1,
+      </if>
+      <if test="categoryLevel2 != null">
+        category_level2,
+      </if>
+      <if test="customCategory != null">
+        custom_category,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="isEnable != null">
+        is_enable,
+      </if>
+      <if test="views != null">
+        views,
+      </if>
+      <if test="parkingCapacity != null">
+        parking_capacity,
+      </if>
+      <if test="browseCount != null">
+        browse_count,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="recommendScore != null">
+        recommend_score,
+      </if>
+      <if test="customRecommendScore != null">
+        custom_recommend_score,
+      </if>
+      <if test="customTags != null">
+        custom_tags,
+      </if>
+      <if test="commentKeywords != null">
+        comment_keywords,
+      </if>
+      <if test="koubeiHeadline != null">
+        koubei_headline,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="spriders != null">
+        spriders,
+      </if>
+      <if test="images != null">
+        images,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="poiId != null">
+        #{poiId,jdbcType=INTEGER},
+      </if>
+      <if test="scene != null">
+        #{scene,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="tel != null">
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null">
+        #{regionId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="cover != null">
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="voice != null">
+        #{voice,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceDuration != null">
+        #{voiceDuration,jdbcType=SMALLINT},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=TINYINT},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="businessId != null">
+        #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryLevel1 != null">
+        #{categoryLevel1,jdbcType=INTEGER},
+      </if>
+      <if test="categoryLevel2 != null">
+        #{categoryLevel2,jdbcType=INTEGER},
+      </if>
+      <if test="customCategory != null">
+        #{customCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnable != null">
+        #{isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="views != null">
+        #{views,jdbcType=INTEGER},
+      </if>
+      <if test="parkingCapacity != null">
+        #{parkingCapacity,jdbcType=SMALLINT},
+      </if>
+      <if test="browseCount != null">
+        #{browseCount,jdbcType=INTEGER},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="recommendScore != null">
+        #{recommendScore,jdbcType=DECIMAL},
+      </if>
+      <if test="customRecommendScore != null">
+        #{customRecommendScore,jdbcType=INTEGER},
+      </if>
+      <if test="customTags != null">
+        #{customTags,jdbcType=VARCHAR},
+      </if>
+      <if test="commentKeywords != null">
+        #{commentKeywords,jdbcType=VARCHAR},
+      </if>
+      <if test="koubeiHeadline != null">
+        #{koubeiHeadline,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="spriders != null">
+        #{spriders,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="images != null">
+        #{images,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ehootu.census.model.PoisExample" resultType="java.lang.Long">
+    select count(*) from pois
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pois
+    <set>
+      <if test="record.poiId != null">
+        poi_id = #{record.poiId,jdbcType=INTEGER},
+      </if>
+      <if test="record.scene != null">
+        scene = #{record.scene,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.tel != null">
+        tel = #{record.tel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.regionId != null">
+        region_id = #{record.regionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null">
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.longitude != null">
+        longitude = #{record.longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.latitude != null">
+        latitude = #{record.latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cover != null">
+        cover = #{record.cover,jdbcType=VARCHAR},
+      </if>
+      <if test="record.voice != null">
+        voice = #{record.voice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.voiceDuration != null">
+        voice_duration = #{record.voiceDuration,jdbcType=SMALLINT},
+      </if>
+      <if test="record.category != null">
+        category = #{record.category,jdbcType=TINYINT},
+      </if>
+      <if test="record.path != null">
+        path = #{record.path,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.score != null">
+        score = #{record.score,jdbcType=DECIMAL},
+      </if>
+      <if test="record.businessId != null">
+        business_id = #{record.businessId,jdbcType=INTEGER},
+      </if>
+      <if test="record.categoryLevel1 != null">
+        category_level1 = #{record.categoryLevel1,jdbcType=INTEGER},
+      </if>
+      <if test="record.categoryLevel2 != null">
+        category_level2 = #{record.categoryLevel2,jdbcType=INTEGER},
+      </if>
+      <if test="record.customCategory != null">
+        custom_category = #{record.customCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="record.level != null">
+        level = #{record.level,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isEnable != null">
+        is_enable = #{record.isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="record.views != null">
+        views = #{record.views,jdbcType=INTEGER},
+      </if>
+      <if test="record.parkingCapacity != null">
+        parking_capacity = #{record.parkingCapacity,jdbcType=SMALLINT},
+      </if>
+      <if test="record.browseCount != null">
+        browse_count = #{record.browseCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.updateUser != null">
+        update_user = #{record.updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="record.recommendScore != null">
+        recommend_score = #{record.recommendScore,jdbcType=DECIMAL},
+      </if>
+      <if test="record.customRecommendScore != null">
+        custom_recommend_score = #{record.customRecommendScore,jdbcType=INTEGER},
+      </if>
+      <if test="record.customTags != null">
+        custom_tags = #{record.customTags,jdbcType=VARCHAR},
+      </if>
+      <if test="record.commentKeywords != null">
+        comment_keywords = #{record.commentKeywords,jdbcType=VARCHAR},
+      </if>
+      <if test="record.koubeiHeadline != null">
+        koubei_headline = #{record.koubeiHeadline,jdbcType=VARCHAR},
+      </if>
+      <if test="record.created != null">
+        created = #{record.created,jdbcType=INTEGER},
+      </if>
+      <if test="record.description != null">
+        description = #{record.description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.spriders != null">
+        spriders = #{record.spriders,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.images != null">
+        images = #{record.images,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update pois
+    set poi_id = #{record.poiId,jdbcType=INTEGER},
+      scene = #{record.scene,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      tel = #{record.tel,jdbcType=VARCHAR},
+      region_id = #{record.regionId,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      longitude = #{record.longitude,jdbcType=DECIMAL},
+      latitude = #{record.latitude,jdbcType=DECIMAL},
+      cover = #{record.cover,jdbcType=VARCHAR},
+      voice = #{record.voice,jdbcType=VARCHAR},
+      voice_duration = #{record.voiceDuration,jdbcType=SMALLINT},
+      category = #{record.category,jdbcType=TINYINT},
+      path = #{record.path,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=TINYINT},
+      score = #{record.score,jdbcType=DECIMAL},
+      business_id = #{record.businessId,jdbcType=INTEGER},
+      category_level1 = #{record.categoryLevel1,jdbcType=INTEGER},
+      category_level2 = #{record.categoryLevel2,jdbcType=INTEGER},
+      custom_category = #{record.customCategory,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=VARCHAR},
+      is_enable = #{record.isEnable,jdbcType=TINYINT},
+      views = #{record.views,jdbcType=INTEGER},
+      parking_capacity = #{record.parkingCapacity,jdbcType=SMALLINT},
+      browse_count = #{record.browseCount,jdbcType=INTEGER},
+      update_user = #{record.updateUser,jdbcType=INTEGER},
+      recommend_score = #{record.recommendScore,jdbcType=DECIMAL},
+      custom_recommend_score = #{record.customRecommendScore,jdbcType=INTEGER},
+      custom_tags = #{record.customTags,jdbcType=VARCHAR},
+      comment_keywords = #{record.commentKeywords,jdbcType=VARCHAR},
+      koubei_headline = #{record.koubeiHeadline,jdbcType=VARCHAR},
+      created = #{record.created,jdbcType=INTEGER},
+      description = #{record.description,jdbcType=LONGVARCHAR},
+      spriders = #{record.spriders,jdbcType=LONGVARCHAR},
+      images = #{record.images,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pois
+    set poi_id = #{record.poiId,jdbcType=INTEGER},
+      scene = #{record.scene,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      tel = #{record.tel,jdbcType=VARCHAR},
+      region_id = #{record.regionId,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      longitude = #{record.longitude,jdbcType=DECIMAL},
+      latitude = #{record.latitude,jdbcType=DECIMAL},
+      cover = #{record.cover,jdbcType=VARCHAR},
+      voice = #{record.voice,jdbcType=VARCHAR},
+      voice_duration = #{record.voiceDuration,jdbcType=SMALLINT},
+      category = #{record.category,jdbcType=TINYINT},
+      path = #{record.path,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=TINYINT},
+      score = #{record.score,jdbcType=DECIMAL},
+      business_id = #{record.businessId,jdbcType=INTEGER},
+      category_level1 = #{record.categoryLevel1,jdbcType=INTEGER},
+      category_level2 = #{record.categoryLevel2,jdbcType=INTEGER},
+      custom_category = #{record.customCategory,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=VARCHAR},
+      is_enable = #{record.isEnable,jdbcType=TINYINT},
+      views = #{record.views,jdbcType=INTEGER},
+      parking_capacity = #{record.parkingCapacity,jdbcType=SMALLINT},
+      browse_count = #{record.browseCount,jdbcType=INTEGER},
+      update_user = #{record.updateUser,jdbcType=INTEGER},
+      recommend_score = #{record.recommendScore,jdbcType=DECIMAL},
+      custom_recommend_score = #{record.customRecommendScore,jdbcType=INTEGER},
+      custom_tags = #{record.customTags,jdbcType=VARCHAR},
+      comment_keywords = #{record.commentKeywords,jdbcType=VARCHAR},
+      koubei_headline = #{record.koubeiHeadline,jdbcType=VARCHAR},
+      created = #{record.created,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.census.model.PoisWithBLOBs">
+    update pois
+    <set>
+      <if test="scene != null">
+        scene = #{scene,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null">
+        region_id = #{regionId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="cover != null">
+        cover = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="voice != null">
+        voice = #{voice,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceDuration != null">
+        voice_duration = #{voiceDuration,jdbcType=SMALLINT},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=TINYINT},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="businessId != null">
+        business_id = #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryLevel1 != null">
+        category_level1 = #{categoryLevel1,jdbcType=INTEGER},
+      </if>
+      <if test="categoryLevel2 != null">
+        category_level2 = #{categoryLevel2,jdbcType=INTEGER},
+      </if>
+      <if test="customCategory != null">
+        custom_category = #{customCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnable != null">
+        is_enable = #{isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="views != null">
+        views = #{views,jdbcType=INTEGER},
+      </if>
+      <if test="parkingCapacity != null">
+        parking_capacity = #{parkingCapacity,jdbcType=SMALLINT},
+      </if>
+      <if test="browseCount != null">
+        browse_count = #{browseCount,jdbcType=INTEGER},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="recommendScore != null">
+        recommend_score = #{recommendScore,jdbcType=DECIMAL},
+      </if>
+      <if test="customRecommendScore != null">
+        custom_recommend_score = #{customRecommendScore,jdbcType=INTEGER},
+      </if>
+      <if test="customTags != null">
+        custom_tags = #{customTags,jdbcType=VARCHAR},
+      </if>
+      <if test="commentKeywords != null">
+        comment_keywords = #{commentKeywords,jdbcType=VARCHAR},
+      </if>
+      <if test="koubeiHeadline != null">
+        koubei_headline = #{koubeiHeadline,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="spriders != null">
+        spriders = #{spriders,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="images != null">
+        images = #{images,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where poi_id = #{poiId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ehootu.census.model.PoisWithBLOBs">
+    update pois
+    set scene = #{scene,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      tel = #{tel,jdbcType=VARCHAR},
+      region_id = #{regionId,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      cover = #{cover,jdbcType=VARCHAR},
+      voice = #{voice,jdbcType=VARCHAR},
+      voice_duration = #{voiceDuration,jdbcType=SMALLINT},
+      category = #{category,jdbcType=TINYINT},
+      path = #{path,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      score = #{score,jdbcType=DECIMAL},
+      business_id = #{businessId,jdbcType=INTEGER},
+      category_level1 = #{categoryLevel1,jdbcType=INTEGER},
+      category_level2 = #{categoryLevel2,jdbcType=INTEGER},
+      custom_category = #{customCategory,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      is_enable = #{isEnable,jdbcType=TINYINT},
+      views = #{views,jdbcType=INTEGER},
+      parking_capacity = #{parkingCapacity,jdbcType=SMALLINT},
+      browse_count = #{browseCount,jdbcType=INTEGER},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      recommend_score = #{recommendScore,jdbcType=DECIMAL},
+      custom_recommend_score = #{customRecommendScore,jdbcType=INTEGER},
+      custom_tags = #{customTags,jdbcType=VARCHAR},
+      comment_keywords = #{commentKeywords,jdbcType=VARCHAR},
+      koubei_headline = #{koubeiHeadline,jdbcType=VARCHAR},
+      created = #{created,jdbcType=INTEGER},
+      description = #{description,jdbcType=LONGVARCHAR},
+      spriders = #{spriders,jdbcType=LONGVARCHAR},
+      images = #{images,jdbcType=LONGVARCHAR}
+    where poi_id = #{poiId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ehootu.census.model.Pois">
+    update pois
+    set scene = #{scene,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      tel = #{tel,jdbcType=VARCHAR},
+      region_id = #{regionId,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      cover = #{cover,jdbcType=VARCHAR},
+      voice = #{voice,jdbcType=VARCHAR},
+      voice_duration = #{voiceDuration,jdbcType=SMALLINT},
+      category = #{category,jdbcType=TINYINT},
+      path = #{path,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      score = #{score,jdbcType=DECIMAL},
+      business_id = #{businessId,jdbcType=INTEGER},
+      category_level1 = #{categoryLevel1,jdbcType=INTEGER},
+      category_level2 = #{categoryLevel2,jdbcType=INTEGER},
+      custom_category = #{customCategory,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      is_enable = #{isEnable,jdbcType=TINYINT},
+      views = #{views,jdbcType=INTEGER},
+      parking_capacity = #{parkingCapacity,jdbcType=SMALLINT},
+      browse_count = #{browseCount,jdbcType=INTEGER},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      recommend_score = #{recommendScore,jdbcType=DECIMAL},
+      custom_recommend_score = #{customRecommendScore,jdbcType=INTEGER},
+      custom_tags = #{customTags,jdbcType=VARCHAR},
+      comment_keywords = #{commentKeywords,jdbcType=VARCHAR},
+      koubei_headline = #{koubeiHeadline,jdbcType=VARCHAR},
+      created = #{created,jdbcType=INTEGER}
+    where poi_id = #{poiId,jdbcType=INTEGER}
+  </update>
+</mapper>

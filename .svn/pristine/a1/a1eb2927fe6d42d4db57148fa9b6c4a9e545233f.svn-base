@@ -1,0 +1,259 @@
+package com.ehootu.census.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.ehootu.census.model.CensusApproval;
+import com.ehootu.census.model.InputCensus;
+import com.ehootu.census.model.OutCensus;
+import com.ehootu.census.service.CensusService;
+import com.ehootu.core.generic.BaseController;
+import com.ehootu.core.util.PageUtils;
+import com.ehootu.core.util.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @Title:CensusController
+ * @Author: KongXiaoPing
+ * @Date: 2017-12-28 11:13
+ * @Description: 户籍业务办理控制类
+ */
+@Controller
+@RequestMapping(value = "/census")
+public class CensusController extends BaseController {
+    private final static Logger log = LoggerFactory.getLogger(CensusController.class);
+    @Autowired
+    private CensusService censusService;
+
+    /**
+     * 添加户籍(夫妻投靠和新生儿入户和户籍注销)
+     */
+    @RequestMapping(value = "/addCensus")
+    public void addCensus(InputCensus inputCensus) {
+
+        try {
+            censusService.saveCensus(inputCensus);
+            resultSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultError("500", "户籍添加报错");
+        }
+    }
+
+    /**
+     * pc端 根据审核阶段approvalStage=0查询 微信端添加的 户籍列表 分页
+     *
+     * @params "page" 当前页 默认第一页
+     * "limit" 每页条数 默认10条
+     */
+    @RequestMapping(value = "/queryCensusApprovalByPC")
+    public void queryCensusApprovalByPC(@RequestParam Map<String, Object> params) {
+        log.info("params:" + params);
+        try {
+            Query query = new Query(params);
+
+            //pc端  根据审核阶段approvalStage=0查询 微信端添加的 户籍列表 分页  approvalStage:当前审核阶段(0户政大厅，1治安大队,2领导)
+            List<OutCensus> censusRegisterList = censusService.queryCensusApprovalByPC(query);
+            //总页数
+            int total = censusService.queryCensusApprovalTotal(query);
+            PageUtils pageUtil = new PageUtils(censusRegisterList, total, query.getLimit(), query.getPage());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("page",pageUtil);
+            resultPage(jsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultError("500", "数据库操作异常");
+        }
+    }
+
+    /**
+     * app端 查询待审批的微信端添加的 户籍列表 分页
+     *
+     * @params policeId 警察id
+     * timeFlog：查询时间表示 1 一周内 2一个月内
+     * " name":申请人姓名
+     * " currentCensusType ":户籍类型 4 夫妻投靠 5 新生儿 6 户籍注销
+     * " currentCensusStatus ":状态：0-迁入入户;1-迁出2-迁移3-注销
+     * "page" 当前页 默认第一页
+     * "limit" 每页条数 默认10条
+     */
+    @RequestMapping(value = "/queryCensusPendingApproval")
+    public void queryCensusPendingApproval(@RequestParam Map<String, Object> params) {
+        log.info("params:" + params);
+        try {
+            //列表 查询待审批的微信端添加的 户籍列表 分页
+            List<OutCensus> censusRegisterList = censusService.queryCensusPendingApproval(params);
+            resultSuccess(censusRegisterList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultError("500", "数据库操作异常");
+        }
+    }
+
+    /**
+     * app端 查询微信端添加的  已审批的户籍列表 分页
+     *
+     * @params policeId 警察id
+     * "approvalStage":审核阶段(0户政大厅，1治安大队,2领导) （必传）
+     * timeFlog：查询时间表示 1 一周内 2一个月内
+     * " name":申请人姓名
+     * " currentCensusType ":户籍类型 4 夫妻投靠 5 新生儿 6 户籍注销
+     * " currentCensusStatus ":状态：0-迁入入户;1-迁出2-迁移3-注销
+     * " approvalStatus ":审核状态(0未审核，1驳回,2审核通过)
+     * "page" 当前页 默认第一页
+     * "limit" 每页条数 默认10条
+     */
+    @RequestMapping(value = "/queryCensusApprovaled")
+    public void queryCensusApprovaled(@RequestParam Map<String, Object> params) {
+        log.info("params:" + params);
+        try {
+            //列表 查询微信端添加的  已审批的户籍列表 分页
+            List<OutCensus> censusRegisterList = censusService.queryCensusApprovaled(params);
+            resultSuccess(censusRegisterList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultError("500", "数据库操作异常");
+        }
+    }
+
+    /**
+     * 根据户籍id和警察id查看详情
+     *
+     * @param params id 户籍id
+     *               policeId 警察id（已审批查看详情传）
+     *               "approvalStage":审核阶段(0户政大厅，1治安大队,2领导) （必传）
+     */
+    @RequestMapping(value = "/queryCensusById")
+    public void queryCensusById(@RequestParam Map<String, Object> params) {
+        log.info("户籍id---》" + params.get("id"));
+        log.info("审核阶段(0户政大厅，1治安大队,2领导)---》" + params.get("approvalStage"));
+        try {
+
+            //根据户籍id查看详情
+            OutCensus outCensus = censusService.queryCensusById(params);
+            if (null != outCensus) {
+                //监护人书面申请
+                if (null != outCensus.getGuardianWrittenApplication()) {
+                    String[] guardianWrittenApplicationArray = outCensus.getGuardianWrittenApplication().split(",");
+                    outCensus.setGuardianWrittenApplicationArray(guardianWrittenApplicationArray);
+                }
+                //医学证明
+                if (null != outCensus.getMedicalProof()) {
+                    String[] medicalProofArray = outCensus.getMedicalProof().split(",");
+                    outCensus.setMedicalProofArray(medicalProofArray);
+                }
+                //生育服务证明
+                if (null != outCensus.getBirthCertificate()) {
+                    String[] birthCertificateArray = outCensus.getBirthCertificate().split(",");
+                    outCensus.setBirthCertificateArray(birthCertificateArray);
+                }
+                //婴儿血型单
+                if (null != outCensus.getBabyBloodType()) {
+                    String[] babyBloodTypeArray = outCensus.getBabyBloodType().split(",");
+                    outCensus.setBabyBloodTypeArray(babyBloodTypeArray);
+                }
+                //父母双方的户口本
+                if (null != outCensus.getParentsAccount()) {
+                    String[] parentsAccountArray = outCensus.getParentsAccount().split(",");
+                    outCensus.setParentsAccountArray(parentsAccountArray);
+                }
+                //父母双方结婚证
+                if (null != outCensus.getParentsMarriageCertificate()) {
+                    String[] parentsMarriageCertificateArray = outCensus.getParentsMarriageCertificate().split(",");
+                    outCensus.setParentsMarriageCertificateArray(parentsMarriageCertificateArray);
+                }
+                //被投靠人书面申请
+                if (null != outCensus.getPatronWrittenApplication()) {
+                    String[] patronWrittenApplicationArray = outCensus.getPatronWrittenApplication().split(",");
+                    outCensus.setPatronWrittenApplicationArray(patronWrittenApplicationArray);
+                }
+                //结婚证
+                if (null != outCensus.getMarriedCertificate()) {
+                    String[] marriedCertificateArray = outCensus.getMarriedCertificate().split(",");
+                    outCensus.setMarriedCertificateArray(marriedCertificateArray);
+                }
+                //双方（投靠人，被投靠人）户口原件或户籍证明
+                if (null != outCensus.getBorthCensusRegister()) {
+                    String[] borthCensusRegisterArray = outCensus.getBorthCensusRegister().split(",");
+                    outCensus.setBorthCensusRegisterArray(borthCensusRegisterArray);
+                }
+                //双方（投靠人，被投靠人）身份证复印件
+                if (null != outCensus.getBorthCard()) {
+                    String[] borthCardArray = outCensus.getBorthCard().split(",");
+                    outCensus.setBorthCardArray(borthCardArray);
+                }
+                //死亡证明
+                if (null != outCensus.getDeathCertificate()) {
+                    String[] deathCertificateArray = outCensus.getDeathCertificate().split(",");
+                    outCensus.setDeathCertificateArray(deathCertificateArray);
+                }
+                //户口本原件
+                if (null != outCensus.getCensusRegister()) {
+                    String[] censusRegisterArray = outCensus.getCensusRegister().split(",");
+                    outCensus.setCensusRegisterArray(censusRegisterArray);
+                }
+            }
+            resultSuccess(outCensus);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            resultError("500", "参数为空");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultError("500", "数据库异常");
+        }
+    }
+
+    /**
+     * 户籍业务审核
+     * 当前阶段审核的工作人员修改审核,同时添加该户籍id为下一阶段审核的,
+     *
+     * @param inputCensus "id": 户籍id（必传）
+     *                    "approvalStage":审核阶段(0户政大厅，1治安大队,2领导) （必传）
+     *                    policeId 警察id（必传）
+     *                    ifSubmitSuperior：是否提交上级，0-否；1-是（必传）
+     */
+    @RequestMapping(value = "/approvalCensus")
+    public void approvalCensus(InputCensus inputCensus) {
+        try {
+            log.info("户籍id--》" + inputCensus.getId());
+            log.info("审核阶段id--》" + inputCensus.getApprovalStage());
+            //根据户籍id 和审核阶段(0户政大厅，1治安大队,2领导)查询审核对象
+            CensusApproval censusApproval = censusService.selectByCensusId(inputCensus);
+            CensusApproval approval = new CensusApproval(inputCensus);
+            //审核时间
+            approval.setApprovalTime(new Date());
+            //警察id
+            approval.setPoliceId(inputCensus.getPoliceId());
+            //审核id
+            approval.setId(censusApproval.getId());
+            //修改户籍审核
+            censusService.updateCensusApproval(approval);
+
+            //如果传入的审核阶段为小于领导并且要提交到下一级，则添加     approvalStage":审核阶段(0户政大厅，1治安大队,2领导)
+            if (inputCensus.getApprovalStage()<2 && inputCensus.getIfSubmitSuperior()==1 ) {
+                CensusApproval approval2 = new CensusApproval();
+                //设置审核阶段
+                approval2.setApprovalStage(inputCensus.getApprovalStage() + 1);
+                //受理编号
+                approval2.setAcceptNumber(censusApproval.getAcceptNumber());
+                //审核状态(0未审核，1驳回,2审核通过)
+                approval2.setApprovalStatus(0);
+                //户籍id
+                approval2.setCensusRegisterId(inputCensus.getId());
+                //添加户籍审批
+                censusService.addCensusApproval(approval2);
+            }
+            resultSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultError("500", "数据库异常，审核失败");
+        }
+    }
+}

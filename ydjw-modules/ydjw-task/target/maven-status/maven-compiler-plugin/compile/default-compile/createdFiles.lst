@@ -1,0 +1,17 @@
+com\ehootu\task\dao\TaskExecutionMapper.class
+com\ehootu\task\model\TaskExample$GeneratedCriteria.class
+com\ehootu\task\model\TaskExecutionExample.class
+com\ehootu\task\model\TaskExecutionExample$Criterion.class
+com\ehootu\task\controller\TaskController.class
+com\ehootu\task\service\TaskService.class
+com\ehootu\task\dao\TaskMapper.class
+com\ehootu\task\model\TaskExecution.class
+com\ehootu\task\util\WSServer.class
+com\ehootu\task\model\TaskExample$Criterion.class
+com\ehootu\task\service\impl\TaskServiceImpl.class
+com\ehootu\task\controller\SysTaskController.class
+com\ehootu\task\model\TaskExample$Criteria.class
+com\ehootu\task\model\TaskExecutionExample$GeneratedCriteria.class
+com\ehootu\task\model\Task.class
+com\ehootu\task\model\TaskExecutionExample$Criteria.class
+com\ehootu\task\model\TaskExample.class

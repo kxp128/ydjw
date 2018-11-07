@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ehootu.census.dao.UsersMapper">
+  <resultMap id="BaseResultMap" type="com.ehootu.census.model.Users">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="is_enable" jdbcType="TINYINT" property="isEnable" />
+    <result column="phone_location" jdbcType="VARCHAR" property="phoneLocation" />
+    <result column="age" jdbcType="TINYINT" property="age" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="reg_date" jdbcType="INTEGER" property="regDate" />
+    <result column="last_login_date" jdbcType="INTEGER" property="lastLoginDate" />
+    <result column="openid" jdbcType="VARCHAR" property="openid" />
+    <result column="wxa_open_id" jdbcType="VARCHAR" property="wxaOpenId" />
+    <result column="withdrawal_amount" jdbcType="DECIMAL" property="withdrawalAmount" />
+    <result column="total_coupon_amount" jdbcType="DECIMAL" property="totalCouponAmount" />
+    <result column="union_id" jdbcType="VARCHAR" property="unionId" />
+    <result column="alipay_user_id" jdbcType="BIGINT" property="alipayUserId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    user_id, phone, sex, nickname, province, city, avatar, password, is_enable, phone_location, 
+    age, birthday, reg_date, last_login_date, openid, wxa_open_id, withdrawal_amount, 
+    total_coupon_amount, union_id, alipay_user_id
+  </sql>
+  <select id="selectByExample" parameterType="com.ehootu.census.model.UsersExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from users
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from users
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from users
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.ehootu.census.model.UsersExample">
+    delete from users
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.ehootu.census.model.Users">
+    insert into users (user_id, phone, sex, 
+      nickname, province, city, 
+      avatar, password, is_enable, 
+      phone_location, age, birthday, 
+      reg_date, last_login_date, openid, 
+      wxa_open_id, withdrawal_amount, total_coupon_amount, 
+      union_id, alipay_user_id)
+    values (#{userId,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, 
+      #{nickname,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{avatar,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{isEnable,jdbcType=TINYINT}, 
+      #{phoneLocation,jdbcType=VARCHAR}, #{age,jdbcType=TINYINT}, #{birthday,jdbcType=VARCHAR}, 
+      #{regDate,jdbcType=INTEGER}, #{lastLoginDate,jdbcType=INTEGER}, #{openid,jdbcType=VARCHAR}, 
+      #{wxaOpenId,jdbcType=VARCHAR}, #{withdrawalAmount,jdbcType=DECIMAL}, #{totalCouponAmount,jdbcType=DECIMAL}, 
+      #{unionId,jdbcType=VARCHAR}, #{alipayUserId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ehootu.census.model.Users">
+    insert into users
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="isEnable != null">
+        is_enable,
+      </if>
+      <if test="phoneLocation != null">
+        phone_location,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="regDate != null">
+        reg_date,
+      </if>
+      <if test="lastLoginDate != null">
+        last_login_date,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+      <if test="wxaOpenId != null">
+        wxa_open_id,
+      </if>
+      <if test="withdrawalAmount != null">
+        withdrawal_amount,
+      </if>
+      <if test="totalCouponAmount != null">
+        total_coupon_amount,
+      </if>
+      <if test="unionId != null">
+        union_id,
+      </if>
+      <if test="alipayUserId != null">
+        alipay_user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnable != null">
+        #{isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="phoneLocation != null">
+        #{phoneLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=TINYINT},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="regDate != null">
+        #{regDate,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginDate != null">
+        #{lastLoginDate,jdbcType=INTEGER},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxaOpenId != null">
+        #{wxaOpenId,jdbcType=VARCHAR},
+      </if>
+      <if test="withdrawalAmount != null">
+        #{withdrawalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="totalCouponAmount != null">
+        #{totalCouponAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="unionId != null">
+        #{unionId,jdbcType=VARCHAR},
+      </if>
+      <if test="alipayUserId != null">
+        #{alipayUserId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.ehootu.census.model.UsersExample" resultType="java.lang.Long">
+    select count(*) from users
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update users
+    <set>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null">
+        sex = #{record.sex,jdbcType=TINYINT},
+      </if>
+      <if test="record.nickname != null">
+        nickname = #{record.nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.province != null">
+        province = #{record.province,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null">
+        city = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.avatar != null">
+        avatar = #{record.avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        password = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isEnable != null">
+        is_enable = #{record.isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="record.phoneLocation != null">
+        phone_location = #{record.phoneLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.age != null">
+        age = #{record.age,jdbcType=TINYINT},
+      </if>
+      <if test="record.birthday != null">
+        birthday = #{record.birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="record.regDate != null">
+        reg_date = #{record.regDate,jdbcType=INTEGER},
+      </if>
+      <if test="record.lastLoginDate != null">
+        last_login_date = #{record.lastLoginDate,jdbcType=INTEGER},
+      </if>
+      <if test="record.openid != null">
+        openid = #{record.openid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wxaOpenId != null">
+        wxa_open_id = #{record.wxaOpenId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.withdrawalAmount != null">
+        withdrawal_amount = #{record.withdrawalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalCouponAmount != null">
+        total_coupon_amount = #{record.totalCouponAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.unionId != null">
+        union_id = #{record.unionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.alipayUserId != null">
+        alipay_user_id = #{record.alipayUserId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update users
+    set user_id = #{record.userId,jdbcType=INTEGER},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      sex = #{record.sex,jdbcType=TINYINT},
+      nickname = #{record.nickname,jdbcType=VARCHAR},
+      province = #{record.province,jdbcType=VARCHAR},
+      city = #{record.city,jdbcType=VARCHAR},
+      avatar = #{record.avatar,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
+      is_enable = #{record.isEnable,jdbcType=TINYINT},
+      phone_location = #{record.phoneLocation,jdbcType=VARCHAR},
+      age = #{record.age,jdbcType=TINYINT},
+      birthday = #{record.birthday,jdbcType=VARCHAR},
+      reg_date = #{record.regDate,jdbcType=INTEGER},
+      last_login_date = #{record.lastLoginDate,jdbcType=INTEGER},
+      openid = #{record.openid,jdbcType=VARCHAR},
+      wxa_open_id = #{record.wxaOpenId,jdbcType=VARCHAR},
+      withdrawal_amount = #{record.withdrawalAmount,jdbcType=DECIMAL},
+      total_coupon_amount = #{record.totalCouponAmount,jdbcType=DECIMAL},
+      union_id = #{record.unionId,jdbcType=VARCHAR},
+      alipay_user_id = #{record.alipayUserId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ehootu.census.model.Users">
+    update users
+    <set>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=TINYINT},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnable != null">
+        is_enable = #{isEnable,jdbcType=TINYINT},
+      </if>
+      <if test="phoneLocation != null">
+        phone_location = #{phoneLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=TINYINT},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="regDate != null">
+        reg_date = #{regDate,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginDate != null">
+        last_login_date = #{lastLoginDate,jdbcType=INTEGER},
+      </if>
+      <if test="openid != null">
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxaOpenId != null">
+        wxa_open_id = #{wxaOpenId,jdbcType=VARCHAR},
+      </if>
+      <if test="withdrawalAmount != null">
+        withdrawal_amount = #{withdrawalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="totalCouponAmount != null">
+        total_coupon_amount = #{totalCouponAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="unionId != null">
+        union_id = #{unionId,jdbcType=VARCHAR},
+      </if>
+      <if test="alipayUserId != null">
+        alipay_user_id = #{alipayUserId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ehootu.census.model.Users">
+    update users
+    set phone = #{phone,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=TINYINT},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      is_enable = #{isEnable,jdbcType=TINYINT},
+      phone_location = #{phoneLocation,jdbcType=VARCHAR},
+      age = #{age,jdbcType=TINYINT},
+      birthday = #{birthday,jdbcType=VARCHAR},
+      reg_date = #{regDate,jdbcType=INTEGER},
+      last_login_date = #{lastLoginDate,jdbcType=INTEGER},
+      openid = #{openid,jdbcType=VARCHAR},
+      wxa_open_id = #{wxaOpenId,jdbcType=VARCHAR},
+      withdrawal_amount = #{withdrawalAmount,jdbcType=DECIMAL},
+      total_coupon_amount = #{totalCouponAmount,jdbcType=DECIMAL},
+      union_id = #{unionId,jdbcType=VARCHAR},
+      alipay_user_id = #{alipayUserId,jdbcType=BIGINT}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

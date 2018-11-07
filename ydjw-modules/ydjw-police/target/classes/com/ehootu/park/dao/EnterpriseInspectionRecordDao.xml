@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.park.dao.EnterpriseInspectionRecordDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.park.model.EnterpriseInspectionRecordEntity" id="enterpriseInspectionRecordMap">
+        <result property="id" column="id"/>
+        <result property="policeStation" column="police_station"/>
+        <result property="policeOffice" column="police_office"/>
+        <result property="enterpriseInternalOrganization" column="enterprise_internal_organization"/>
+        <result property="enterpriseIncharge" column="enterprise_incharge"/>
+        <result property="practitionersInput" column="practitioners_input"/>
+        <result property="inspectionType" column="inspection_type"/>
+        <result property="inspectionTime" column="inspection_time"/>
+        <result property="inspectors" column="inspectors"/>
+        <result property="inspectionStatus" column="inspection_status"/>
+        <result property="rectificationAndDistribution" column="rectification_and_distribution"/>
+        <result property="investigate" column="investigate"/>
+        <result property="fourPatrolPlatform" column="four_patrol_platform"/>
+        <result property="flashMemoryPlatform" column="flash_memory_platform"/>
+        <result property="workingPicture" column="working_picture"/>
+        <result property="policeId" column="police_id"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="date" column="date"/>
+        <result property="standingBook" column="standing_book"/>
+        <result property="taskId" column="task_id"/>
+        <collection property="publicInformation" ofType="com.ehootu.park.model.PublicInformationEntity">
+            <result property="id" column="id"/>
+            <result property="enterpriseAddress" column="enterprise_address"/>
+            <result property="enterpriseName" column="enterprise_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryObject" resultMap="enterpriseInspectionRecordMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from enterprise_inspection_record enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.id = #{value}
+	</select>
+    <select id="select" resultMap="enterpriseInspectionRecordMap">
+		select enterprise.*,public.enterprise_address,public.enterprise_name from enterprise_inspection_record enterprise 
+			left join public_information public on public.id=enterprise.public_id
+			where enterprise.police_id = #{value} or find_in_set(#{value},enterprise.inspectors)
+	</select>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="enterpriseInspectionRecordMap">
+        select enterprise.*,public.enterprise_address,public.enterprise_name from enterprise_inspection_record
+        enterprise
+        left join public_information public on public.id=enterprise.public_id
+        where enterprise.police_id = #{policeId} or find_in_set(#{policeId},enterprise.inspectors)
+        order by enterprise.id desc
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <insert id="saveAndGetId" parameterType="com.ehootu.park.model.EnterpriseInspectionRecordEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">select UUID()</selectKey>
+        insert into enterprise_inspection_record
+        (
+        `id`,
+        `police_station`,
+        `police_office`,
+        `enterprise_internal_organization`,
+        `enterprise_incharge`,
+        `practitioners_input`,
+        `inspection_type`,
+        `inspection_time`,
+        `inspectors`,
+        `inspection_status`,
+        `rectification_and_distribution`,
+        `investigate`,
+        `four_patrol_platform`,
+        `flash_memory_platform`,
+        `working_picture`,
+        `police_id`,
+        `phone_number`,
+        `date`,
+        `standing_book`,
+        `task_id`,
+        `public_id`
+        )
+        values
+        (
+        #{id,jdbcType=VARCHAR},
+        #{policeStation},
+        #{policeOffice},
+        #{enterpriseInternalOrganization},
+        #{enterpriseIncharge},
+        #{practitionersInput},
+        #{inspectionType},
+        #{inspectionTime},
+        #{inspectors},
+        #{inspectionStatus},
+        #{rectificationAndDistribution},
+        #{investigate},
+        #{fourPatrolPlatform},
+        #{flashMemoryPlatform},
+        #{workingPicture},
+        #{policeId},
+        #{phoneNumber},
+        #{date},
+        #{standingBook},
+        #{taskId},
+        #{publicId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ehootu.park.model.EnterpriseInspectionRecordEntity">
+        update enterprise_inspection_record
+        <set>
+            <if test="policeStation != null">`police_station` = #{policeStation},</if>
+            <if test="policeOffice != null">`police_office` = #{policeOffice},</if>
+            <if test="enterpriseInternalOrganization != null">`enterprise_internal_organization` =
+                #{enterpriseInternalOrganization},
+            </if>
+            <if test="enterpriseIncharge != null">`enterprise_incharge` = #{enterpriseIncharge},</if>
+            <if test="practitionersInput != null">`practitioners_input` = #{practitionersInput},</if>
+            <if test="inspectionType != null">`inspection_type` = #{inspectionType},</if>
+            <if test="inspectionTime != null">`inspection_time` = #{inspectionTime},</if>
+            <if test="inspectors != null">`inspectors` = #{inspectors},</if>
+            <if test="inspectionStatus != null">`inspection_status` = #{inspectionStatus},</if>
+            <if test="rectificationAndDistribution != null">`rectification_and_distribution` =
+                #{rectificationAndDistribution},
+            </if>
+            <if test="investigate != null">`investigate` = #{investigate},</if>
+            <if test="fourPatrolPlatform != null">`four_patrol_platform` = #{fourPatrolPlatform},</if>
+            <if test="flashMemoryPlatform != null">`flash_memory_platform` = #{flashMemoryPlatform},</if>
+            <if test="workingPicture != null">`working_picture` = #{workingPicture},</if>
+            <if test="policeId != null">`police_id` = #{policeId}</if>
+            <if test="phoneNumber != null">`phone_number` = #{phoneNumber}</if>
+            <if test="date != null">`date` = #{date}</if>
+            <if test="standingBook != null">`standing_book` = #{standingBook}</if>
+            <if test="taskId != null">`task_id` = #{taskId}</if>
+            <if test="publicId != null">`public_id` = #{publicId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from enterprise_inspection_record where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from enterprise_inspection_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

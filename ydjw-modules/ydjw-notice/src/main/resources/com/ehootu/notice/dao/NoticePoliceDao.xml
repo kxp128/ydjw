@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ehootu.notice.dao.NoticePoliceDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.ehootu.notice.entity.NoticePoliceEntity" id="noticePoliceMap">
+        <result property="id" column="id"/>
+        <result property="noticeId" column="notice_id"/>
+        <result property="policeId" column="police_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="num" column="num"/>
+        <result property="seeFlag" column="see_flag"/>
+        <result property="seeFlagTime" column="see_flag_time"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="deleteFlagTime" column="delete_flag_time"/>
+        <result property="isSync" column="is_sync"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.ehootu.notice.entity.NoticePoliceEntity">
+		select * from notice_police where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.ehootu.notice.entity.NoticePoliceEntity">
+		select * from notice_police
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from notice_police 
+	</select>
+	 
+	<insert id="save" parameterType="com.ehootu.notice.entity.NoticePoliceEntity">
+		insert into notice_police
+		(
+		`id`,
+		`notice_id`,
+		`police_id`,
+		`see_flag`
+		)
+		values
+		<foreach collection="policeIdList" item="item" index="index" separator="," >
+			(
+			#{item.id},
+			#{noticeId},
+			#{item.policeId},
+			0
+			)
+		</foreach>
+	</insert>
+	 
+	<update id="update" parameterType="com.ehootu.notice.entity.NoticePoliceEntity">
+		update notice_police 
+		<set>
+			<if test="noticeId != null">`notice_id` = #{noticeId}, </if>
+			<if test="policeId != null">`police_id` = #{policeId}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="num != null">`num` = #{num}, </if>
+			<if test="seeFlag != null">`see_flag` = #{seeFlag}, </if>
+			<if test="seeFlagTime != null">`see_flag_time` = #{seeFlagTime}, </if>
+			<if test="deleteFlag != null">`delete_flag` = #{deleteFlag}, </if>
+			<if test="deleteFlagTime != null">`delete_flag_time` = #{deleteFlagTime}, </if>
+			<if test="isSync != null">`is_sync` = #{isSync}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from notice_police where notice_id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from notice_police where notice_id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="queryPoliceIdList" resultType="String">
+		select police_id from notice_police where notice_id = #{value}
+	</select>
+
+	<select id="queryNoticePolice" resultMap="noticePoliceMap">
+		select * from notice_police where notice_id = #{noticeId} and police_id = #{policeId}
+	</select>
+</mapper>
